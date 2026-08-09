@@ -1,69 +1,151 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
+import Background from "@/components/Background";
+import Taskbar from "@/components/Taskbar";
+import Window from "@/components/Window";
+import DesktopIcon from "@/components/DesktopIcon";
+import { SkillsImageIcon, AboutMeImageIcon, ProjectsImageIcon, ContactImageIcon, ResumeImageIcon } from "@/components/WindowsIcons";
+import { motion } from "framer-motion";
 
 export default function Home() {
+  const [windows, setWindows] = useState({
+    about: { isOpen: false, isMinimized: false },
+    projects: { isOpen: false, isMinimized: false },
+    skills: { isOpen: false, isMinimized: false },
+    contact: { isOpen: false, isMinimized: false },
+    resume: { isOpen: false, isMinimized: false },
+  });
+
+  const toggleWindow = (name: keyof typeof windows) => {
+    setWindows((prev) => ({
+      ...prev,
+      [name]: { ...prev[name], isOpen: !prev[name].isOpen, isMinimized: false },
+    }));
+  };
+
+  const toggleMinimize = (name: keyof typeof windows) => {
+    setWindows((prev) => ({
+      ...prev,
+      [name]: { ...prev[name], isMinimized: !prev[name].isMinimized },
+    }));
+  };
+
+  const taskbarWindows = [
+    { id: "about" as const, title: "About Me", icon: <AboutMeImageIcon className="w-full h-full" />, isOpen: windows.about.isOpen, isMinimized: windows.about.isMinimized },
+    { id: "projects" as const, title: "Projects", icon: <ProjectsImageIcon className="w-full h-full" />, isOpen: windows.projects.isOpen, isMinimized: windows.projects.isMinimized },
+    { id: "skills" as const, title: "Skills", icon: <SkillsImageIcon className="w-full h-full" />, isOpen: windows.skills.isOpen, isMinimized: windows.skills.isMinimized },
+    { id: "contact" as const, title: "Contact", icon: <ContactImageIcon className="w-full h-full" />, isOpen: windows.contact.isOpen, isMinimized: windows.contact.isMinimized },
+    { id: "resume" as const, title: "Resume", icon: <ResumeImageIcon className="w-full h-full" />, isOpen: windows.resume.isOpen, isMinimized: windows.resume.isMinimized },
+  ];
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="relative w-full h-screen overflow-hidden">
+      <Background />
+
+      <div className="relative z-10 w-full h-full pb-12">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ staggerChildren: 0.1, delayChildren: 0.2 }}
+          className="flex flex-col items-start gap-2 p-4"
+        >
+          <DesktopIcon label="About Me" icon={<AboutMeImageIcon className="w-full h-full" />} onClick={() => toggleWindow("about")} />
+          <DesktopIcon label="Projects" icon={<ProjectsImageIcon className="w-full h-full" />} onClick={() => toggleWindow("projects")} />
+          <DesktopIcon label="Skills" icon={<SkillsImageIcon className="w-full h-full" />} onClick={() => toggleWindow("skills")} />
+          <DesktopIcon label="Contact" icon={<ContactImageIcon className="w-full h-full" />} onClick={() => toggleWindow("contact")} />
+          <DesktopIcon label="Resume" icon={<ResumeImageIcon className="w-full h-full" />} onClick={() => toggleWindow("resume")} />
+        </motion.div>
+
+        {windows.about.isOpen && (
+          <Window
+            title="About Me"
+            icon={<AboutMeImageIcon className="w-4 h-4" />}
+            initialPosition={{ x: 300, y: 150 }}
+            initialSize={{ width: 500, height: 400 }}
+            onClose={() => toggleWindow("about")}
+            onMinimize={() => toggleMinimize("about")}
+            isMinimized={windows.about.isMinimized}
           >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            <div className="space-y-4 font-normal">
+              <h2 className="text-2xl font-bold text-gray-800">Hello, I&apos;m a Designer</h2>
+              <p className="text-gray-600 font-light">
+                I create beautiful and functional user experiences. Welcome to my portfolio!
+              </p>
+            </div>
+          </Window>
+        )}
+
+        {windows.projects.isOpen && (
+          <Window
+            title="Projects"
+            icon={<ProjectsImageIcon className="w-4 h-4" />}
+            initialPosition={{ x: 500, y: 200 }}
+            initialSize={{ width: 500, height: 400 }}
+            onClose={() => toggleWindow("projects")}
+            onMinimize={() => toggleMinimize("projects")}
+            isMinimized={windows.projects.isMinimized}
           >
-            Documentation
-          </a>
-        </div>
-      </main>
+            <div className="space-y-4 font-normal">
+              <h2 className="text-2xl font-bold text-gray-800">My Projects</h2>
+              <p className="text-gray-600 font-light">Check out my latest work here.</p>
+            </div>
+          </Window>
+        )}
+
+        {windows.skills.isOpen && (
+          <Window
+            title="Skills"
+            icon={<SkillsImageIcon className="w-4 h-4" />}
+            initialPosition={{ x: 400, y: 180 }}
+            initialSize={{ width: 450, height: 350 }}
+            onClose={() => toggleWindow("skills")}
+            onMinimize={() => toggleMinimize("skills")}
+            isMinimized={windows.skills.isMinimized}
+          >
+            <div className="space-y-4 font-normal">
+              <h2 className="text-2xl font-bold text-gray-800">Skills</h2>
+              <p className="text-gray-600 font-light">My technical and design skills.</p>
+            </div>
+          </Window>
+        )}
+
+        {windows.contact.isOpen && (
+          <Window
+            title="Contact"
+            icon={<ContactImageIcon className="w-4 h-4" />}
+            initialPosition={{ x: 350, y: 220 }}
+            initialSize={{ width: 450, height: 350 }}
+            onClose={() => toggleWindow("contact")}
+            onMinimize={() => toggleMinimize("contact")}
+            isMinimized={windows.contact.isMinimized}
+          >
+            <div className="space-y-4 font-normal">
+              <h2 className="text-2xl font-bold text-gray-800">Contact</h2>
+              <p className="text-gray-600 font-light">Get in touch with me.</p>
+            </div>
+          </Window>
+        )}
+
+        {windows.resume.isOpen && (
+          <Window
+            title="Resume"
+            icon={<ResumeImageIcon className="w-4 h-4" />}
+            initialPosition={{ x: 450, y: 160 }}
+            initialSize={{ width: 500, height: 400 }}
+            onClose={() => toggleWindow("resume")}
+            onMinimize={() => toggleMinimize("resume")}
+            isMinimized={windows.resume.isMinimized}
+          >
+            <div className="space-y-4 font-normal">
+              <h2 className="text-2xl font-bold text-gray-800">Resume</h2>
+              <p className="text-gray-600 font-light">My resume and work experience.</p>
+            </div>
+          </Window>
+        )}
+      </div>
+
+      <Taskbar windows={taskbarWindows} onToggleMinimize={toggleMinimize} />
     </div>
   );
 }
