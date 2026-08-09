@@ -1,14 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Background from "@/components/Background";
 import Taskbar from "@/components/Taskbar";
 import Window from "@/components/Window";
 import DesktopIcon from "@/components/DesktopIcon";
+import LoginScreen from "@/components/LoginScreen";
+import ContextMenu from "@/components/ContextMenu";
 import { SkillsImageIcon, AboutMeImageIcon, ProjectsImageIcon, ContactImageIcon, ResumeImageIcon } from "@/components/WindowsIcons";
 import { motion } from "framer-motion";
 
 export default function Home() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
+
+  const handleContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setContextMenu({ x: e.clientX, y: e.clientY });
+  };
+
+  const closeContextMenu = () => {
+    setContextMenu(null);
+  };
+
   const [windows, setWindows] = useState({
     about: { isOpen: false, isMinimized: false },
     projects: { isOpen: false, isMinimized: false },
@@ -31,6 +45,19 @@ export default function Home() {
     }));
   };
 
+  useEffect(() => {
+    const handleClick = () => {
+      if (contextMenu) {
+        setContextMenu(null);
+      }
+    };
+
+    if (contextMenu) {
+      document.addEventListener("click", handleClick);
+      return () => document.removeEventListener("click", handleClick);
+    }
+  }, [contextMenu]);
+
   const taskbarWindows = [
     { id: "about" as const, title: "About Me", icon: <AboutMeImageIcon className="w-full h-full" />, isOpen: windows.about.isOpen, isMinimized: windows.about.isMinimized },
     { id: "projects" as const, title: "Projects", icon: <ProjectsImageIcon className="w-full h-full" />, isOpen: windows.projects.isOpen, isMinimized: windows.projects.isMinimized },
@@ -43,7 +70,7 @@ export default function Home() {
     <div className="relative w-full h-screen overflow-hidden">
       <Background />
 
-      <div className="relative z-10 w-full h-full pb-12">
+      <div className="relative z-10 w-full h-full pb-12" onContextMenu={handleContextMenu}>
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -146,6 +173,14 @@ export default function Home() {
       </div>
 
       <Taskbar windows={taskbarWindows} onToggleMinimize={toggleMinimize} />
+
+      {contextMenu && (
+        <ContextMenu x={contextMenu.x} y={contextMenu.y} onClose={closeContextMenu} />
+      )}
+
+      {!isLoggedIn && (
+        <LoginScreen onLogin={() => setIsLoggedIn(true)} />
+      )}
     </div>
   );
 }
