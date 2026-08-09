@@ -12,7 +12,31 @@ import { motion } from "framer-motion";
 
 export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
+
+  const toggleFullscreen = async () => {
+    try {
+      if (!document.fullscreenElement) {
+        await document.documentElement.requestFullscreen();
+        setIsFullscreen(true);
+      } else {
+        await document.exitFullscreen();
+        setIsFullscreen(false);
+      }
+    } catch (err) {
+      console.error("Fullscreen error:", err);
+    }
+  };
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () => document.removeEventListener("fullscreenchange", handleFullscreenChange);
+  }, []);
 
   const handleContextMenu = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -175,11 +199,20 @@ export default function Home() {
       <Taskbar windows={taskbarWindows} onToggleMinimize={toggleMinimize} />
 
       {contextMenu && (
-        <ContextMenu x={contextMenu.x} y={contextMenu.y} onClose={closeContextMenu} />
+        <ContextMenu
+          x={contextMenu.x}
+          y={contextMenu.y}
+          onClose={closeContextMenu}
+          isFullscreen={isFullscreen}
+          onToggleFullscreen={toggleFullscreen}
+        />
       )}
 
       {!isLoggedIn && (
-        <LoginScreen onLogin={() => setIsLoggedIn(true)} />
+        <LoginScreen onLogin={async () => {
+          await toggleFullscreen();
+          setIsLoggedIn(true);
+        }} />
       )}
     </div>
   );

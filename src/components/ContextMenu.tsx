@@ -7,12 +7,15 @@ interface ContextMenuProps {
   x: number;
   y: number;
   onClose: () => void;
+  isFullscreen: boolean;
+  onToggleFullscreen: () => void;
 }
 
 interface MenuItem {
   label: string;
   shortcut?: string;
   submenu?: MenuItem[];
+  active?: boolean;
 }
 
 interface SeparatorItem {
@@ -21,7 +24,7 @@ interface SeparatorItem {
 
 type ContextMenuItem = MenuItem | SeparatorItem;
 
-export default function ContextMenu({ x, y, onClose }: ContextMenuProps) {
+export default function ContextMenu({ x, y, onClose, isFullscreen, onToggleFullscreen }: ContextMenuProps) {
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const hoverTimeoutRef = useRef<number | null>(null);
@@ -35,7 +38,7 @@ export default function ContextMenu({ x, y, onClose }: ContextMenuProps) {
     ]},
     { label: "Check version" },
     { type: "separator" as const },
-    { label: "Full screen" },
+    { label: "Full screen", active: isFullscreen },
     { label: "Personalize" },
   ];
 
@@ -106,6 +109,7 @@ export default function ContextMenu({ x, y, onClose }: ContextMenuProps) {
                 }}
               >
                 <button
+                  onClick={item.label === "Full screen" ? onToggleFullscreen : undefined}
                   className="group w-full flex items-center justify-between px-3 py-1.5 text-left bg-transparent hover:bg-[#D9FF00] hover:text-[#151F27] transition-colors duration-150"
                 >
                   <span className="text-sm text-gray-200 group-hover:text-[#151F27]">{item.label}</span>
@@ -116,6 +120,11 @@ export default function ContextMenu({ x, y, onClose }: ContextMenuProps) {
                     {hasSubmenu && (
                       <svg className="w-3 h-3 text-gray-400 group-hover:text-[#151F27]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
                         <path d="M9 18l6-6-6-6" />
+                      </svg>
+                    )}
+                    {item.active && (
+                      <svg className="w-3 h-3 text-[#D9FF00]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                        <path d="M20 6L9 17l-5-5" />
                       </svg>
                     )}
                   </div>
