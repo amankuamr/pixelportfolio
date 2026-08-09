@@ -24,10 +24,10 @@ export default function Home() {
     }));
   };
 
-  const toggleMinimize = (name: keyof typeof windows) => {
+  const toggleMinimize = (name: string) => {
     setWindows((prev) => ({
       ...prev,
-      [name]: { ...prev[name], isMinimized: !prev[name].isMinimized },
+      [name]: { ...prev[name as keyof typeof prev], isMinimized: !prev[name as keyof typeof prev].isMinimized },
     }));
   };
 
