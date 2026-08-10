@@ -16,7 +16,9 @@ interface TaskbarWindow {
 interface TaskbarProps {
   windows: TaskbarWindow[];
   onToggleMinimize: (id: string) => void;
-  onTaskbarContextMenu: (id: string, x: number, y: number) => void;
+  onTaskbarContextMenu: (id: string, x: number) => void;
+  onStartButtonContextMenu: () => void;
+  startButtonContextMenuOpen: boolean;
 }
 
 interface TrayPopupItem {
@@ -61,7 +63,7 @@ const arrowPopupCategories: TrayCategory[] = [
   },
 ];
 
-export default function Taskbar({ windows, onToggleMinimize, onTaskbarContextMenu }: TaskbarProps) {
+export default function Taskbar({ windows, onToggleMinimize, onTaskbarContextMenu, onStartButtonContextMenu, startButtonContextMenuOpen }: TaskbarProps) {
   const openWindows = windows.filter((w) => w.isOpen);
   const [openPopup, setOpenPopup] = useState<string | null>(null);
   const popupRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -150,7 +152,14 @@ export default function Taskbar({ windows, onToggleMinimize, onTaskbarContextMen
       style={{ backgroundColor: "#1a2332" }}
     >
       <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2">
-        <StartMenu />
+        <div
+          onContextMenu={(e) => {
+            e.preventDefault();
+            onStartButtonContextMenu();
+          }}
+        >
+          <StartMenu />
+        </div>
         {openWindows.map((win) => (
           <button
             key={win.id}
