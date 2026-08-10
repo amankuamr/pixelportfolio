@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { User, FolderOpen, Briefcase, Mail, FileText, Image } from "lucide-react";
 import { AboutMeImageIcon, ProjectsImageIcon, SkillsImageIcon, ContactImageIcon } from "@/components/WindowsIcons";
@@ -8,6 +8,24 @@ import { AboutMeImageIcon, ProjectsImageIcon, SkillsImageIcon, ContactImageIcon 
 export default function StartMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const [showAllApps, setShowAllApps] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+        setShowAllApps(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
 
   const menuItems = [
     { icon: User, label: "About Me" },
@@ -39,7 +57,7 @@ export default function StartMenu() {
   ];
 
   return (
-    <div className="relative">
+    <div className="relative" ref={menuRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-10 h-10 flex items-center justify-center border border-gray-600 hover:border-[#D9FF00] hover:bg-[#D9FF00]/10 transition-colors"
