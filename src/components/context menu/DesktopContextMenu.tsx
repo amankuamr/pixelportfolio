@@ -6,7 +6,6 @@ import { motion, AnimatePresence } from "framer-motion";
 interface ContextMenuProps {
   x: number;
   y: number;
-  onClose: () => void;
   isFullscreen: boolean;
   onToggleFullscreen: () => void;
   onCheckVersion: () => void;
@@ -25,7 +24,7 @@ interface SeparatorItem {
 
 type ContextMenuItem = MenuItem | SeparatorItem;
 
-export default function ContextMenu({ x, y, onClose, isFullscreen, onToggleFullscreen, onCheckVersion }: ContextMenuProps) {
+export default function DesktopContextMenu({ x, y, isFullscreen, onToggleFullscreen, onCheckVersion }: ContextMenuProps) {
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const hoverTimeoutRef = useRef<number | null>(null);

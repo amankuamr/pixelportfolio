@@ -6,7 +6,8 @@ import Taskbar from "@/components/Taskbar";
 import Window from "@/components/Window";
 import DesktopIcon from "@/components/DesktopIcon";
 import LoginScreen from "@/components/LoginScreen";
-import ContextMenu from "@/components/ContextMenu";
+import DesktopContextMenu from "@/components/context menu/DesktopContextMenu";
+import TaskbarContextMenu from "@/components/context menu/TaskbarContextMenu";
 import CmdWindow from "@/components/CmdWindow";
 import { SkillsImageIcon, AboutMeImageIcon, ProjectsImageIcon, ContactImageIcon, ResumeImageIcon } from "@/components/WindowsIcons";
 
@@ -14,6 +15,7 @@ export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
+  const [taskbarContextMenu, setTaskbarContextMenu] = useState<{ id: string; x: number; y: number } | null>(null);
 
   const toggleFullscreen = async () => {
     try {
@@ -43,10 +45,6 @@ export default function Home() {
     setContextMenu({ x: e.clientX, y: e.clientY });
   };
 
-  const closeContextMenu = () => {
-    setContextMenu(null);
-  };
-
   const [windows, setWindows] = useState({
     about: { isOpen: false, isMinimized: false },
     projects: { isOpen: false, isMinimized: false },
@@ -60,6 +58,13 @@ export default function Home() {
     setWindows((prev) => ({
       ...prev,
       [name]: { ...prev[name], isOpen: !prev[name].isOpen, isMinimized: false },
+    }));
+  };
+
+  const closeWindow = (name: keyof typeof windows) => {
+    setWindows((prev) => ({
+      ...prev,
+      [name]: { ...prev[name], isOpen: false, isMinimized: false },
     }));
   };
 
@@ -90,13 +95,16 @@ export default function Home() {
       if (contextMenu) {
         setContextMenu(null);
       }
+      if (taskbarContextMenu) {
+        setTaskbarContextMenu(null);
+      }
     };
 
-    if (contextMenu) {
+    if (contextMenu || taskbarContextMenu) {
       document.addEventListener("click", handleClick);
       return () => document.removeEventListener("click", handleClick);
     }
-  }, [contextMenu]);
+  }, [contextMenu, taskbarContextMenu]);
 
   const taskbarWindows = [
     { id: "about" as const, title: "About Me", icon: <AboutMeImageIcon className="w-full h-full" />, isOpen: windows.about.isOpen, isMinimized: windows.about.isMinimized },
@@ -240,19 +248,28 @@ export default function Home() {
         )}
       </div>
 
-      <Taskbar windows={taskbarWindows} onToggleMinimize={toggleMinimize} />
+      <Taskbar windows={taskbarWindows} onToggleMinimize={toggleMinimize} onTaskbarContextMenu={(id, x, y) => setTaskbarContextMenu({ id, x, y })} />
 
       {contextMenu && (
-        <ContextMenu
+        <DesktopContextMenu
           x={contextMenu.x}
           y={contextMenu.y}
-          onClose={closeContextMenu}
           isFullscreen={isFullscreen}
           onToggleFullscreen={toggleFullscreen}
           onCheckVersion={() => {
             toggleWindow("cmd");
             setContextMenu(null);
           }}
+        />
+      )}
+
+      {taskbarContextMenu && (
+        <TaskbarContextMenu
+          x={taskbarContextMenu.x}
+          windowId={taskbarContextMenu.id}
+          windowTitle={taskbarWindows.find((w) => w.id === taskbarContextMenu.id)?.title || ""}
+          onClose={() => setTaskbarContextMenu(null)}
+          onCloseWindow={closeWindow}
         />
       )}
 

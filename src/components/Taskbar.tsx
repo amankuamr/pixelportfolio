@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Search, Volume2, Shield, ChevronUp, Info } from "lucide-react";
+import { Volume2, Shield, ChevronUp, Info } from "lucide-react";
 import StartMenu from "./StartMenu";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -16,6 +16,7 @@ interface TaskbarWindow {
 interface TaskbarProps {
   windows: TaskbarWindow[];
   onToggleMinimize: (id: string) => void;
+  onTaskbarContextMenu: (id: string, x: number, y: number) => void;
 }
 
 interface TrayPopupItem {
@@ -60,7 +61,7 @@ const arrowPopupCategories: TrayCategory[] = [
   },
 ];
 
-export default function Taskbar({ windows, onToggleMinimize }: TaskbarProps) {
+export default function Taskbar({ windows, onToggleMinimize, onTaskbarContextMenu }: TaskbarProps) {
   const openWindows = windows.filter((w) => w.isOpen);
   const [openPopup, setOpenPopup] = useState<string | null>(null);
   const popupRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -72,11 +73,13 @@ export default function Taskbar({ windows, onToggleMinimize }: TaskbarProps) {
   };
 
   useEffect(() => {
-    const handleClickOutside = () => setOpenPopup(null);
-    if (openPopup) {
-      document.addEventListener("click", handleClickOutside);
-      return () => document.removeEventListener("click", handleClickOutside);
-    }
+    const handleClickOutside = () => {
+      if (openPopup) {
+        setOpenPopup(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [openPopup]);
 
   useEffect(() => {
@@ -148,13 +151,14 @@ export default function Taskbar({ windows, onToggleMinimize }: TaskbarProps) {
     >
       <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2">
         <StartMenu />
-        <button className="w-10 h-10 flex items-center justify-center border border-gray-600 hover:border-[#D9FF00] hover:bg-[#D9FF00]/10 transition-colors">
-          <Search className="w-6 h-6 text-gray-300" />
-        </button>
         {openWindows.map((win) => (
           <button
             key={win.id}
             onClick={() => onToggleMinimize(win.id)}
+            onContextMenu={(e) => {
+              e.preventDefault();
+              onTaskbarContextMenu(win.id, e.clientX);
+            }}
             className={`h-10 w-10 flex items-center justify-center border transition-colors relative ${
               win.isMinimized ? "border-gray-600 bg-transparent hover:border-[#D9FF00] hover:bg-[#D9FF00]/10" : "border-[#D9FF00] bg-white/10 hover:bg-[#D9FF00]/20"
             } ${win.isMinimized ? "shadow-[0_2px_0_#22c55e]" : ""}`}
