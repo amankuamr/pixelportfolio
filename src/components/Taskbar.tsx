@@ -28,20 +28,20 @@ export default function Taskbar({ windows, onToggleMinimize }: TaskbarProps) {
       className="fixed bottom-0 left-0 right-0 h-[52px] flex items-center px-4 z-50 border-t border-gray-700"
       style={{ backgroundColor: "#1a2332" }}
     >
-      <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1">
+      <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2">
         <StartMenu />
-        <button className="w-8 h-8 flex items-center justify-center border border-gray-600 hover:border-[#D9FF00] hover:bg-[#D9FF00]/10 transition-colors">
-          <Search className="w-5 h-5 text-gray-300" />
+        <button className="w-10 h-10 flex items-center justify-center border border-gray-600 hover:border-[#D9FF00] hover:bg-[#D9FF00]/10 transition-colors">
+          <Search className="w-6 h-6 text-gray-300" />
         </button>
         {openWindows.map((win) => (
           <button
             key={win.id}
             onClick={() => onToggleMinimize(win.id)}
-            className={`h-8 w-8 flex items-center justify-center border transition-colors ${
+            className={`h-10 w-10 flex items-center justify-center border transition-colors ${
               win.isMinimized ? "border-gray-600 bg-transparent hover:border-[#D9FF00] hover:bg-[#D9FF00]/10" : "border-[#D9FF00] bg-white/10 hover:bg-[#D9FF00]/20"
             }`}
           >
-            <div className="w-5 h-5 flex items-center justify-center">{win.icon}</div>
+            <div className="w-6 h-6 flex items-center justify-center">{win.icon}</div>
           </button>
         ))}
       </div>

@@ -42,9 +42,9 @@ export default function StartMenu() {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-8 h-8 flex items-center justify-center border border-gray-600 hover:border-[#D9FF00] hover:bg-[#D9FF00]/10 transition-colors"
+        className="w-10 h-10 flex items-center justify-center border border-gray-600 hover:border-[#D9FF00] hover:bg-[#D9FF00]/10 transition-colors"
       >
-        <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4">
+        <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5">
           <rect x="2" y="2" width="9" height="9" fill="#f25022" />
           <rect x="13" y="2" width="9" height="9" fill="#00a4ef" />
           <rect x="2" y="13" width="9" height="9" fill="#7fba00" />
