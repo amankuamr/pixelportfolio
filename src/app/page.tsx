@@ -8,7 +8,6 @@ import DesktopIcon from "@/components/DesktopIcon";
 import LoginScreen from "@/components/LoginScreen";
 import ContextMenu from "@/components/ContextMenu";
 import { SkillsImageIcon, AboutMeImageIcon, ProjectsImageIcon, ContactImageIcon, ResumeImageIcon } from "@/components/WindowsIcons";
-import { motion } from "framer-motion";
 
 export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -69,6 +68,21 @@ export default function Home() {
     }));
   };
 
+  const [iconPositions, setIconPositions] = useState<{ [key: string]: { x: number; y: number } }>({
+    about: { x: 20, y: 20 },
+    projects: { x: 20, y: 120 },
+    skills: { x: 20, y: 220 },
+    contact: { x: 20, y: 320 },
+    resume: { x: 20, y: 420 },
+  });
+
+  const handleIconDragEnd = (name: string, position: { x: number; y: number }) => {
+    setIconPositions((prev) => ({
+      ...prev,
+      [name]: position,
+    }));
+  };
+
   useEffect(() => {
     const handleClick = () => {
       if (contextMenu) {
@@ -95,18 +109,13 @@ export default function Home() {
       <Background />
 
       <div className="relative z-10 w-full h-full pb-12" onContextMenu={handleContextMenu}>
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ staggerChildren: 0.1, delayChildren: 0.2 }}
-          className="flex flex-col items-start gap-2 p-4"
-        >
-          <DesktopIcon label="About Me" icon={<AboutMeImageIcon className="w-full h-full" />} onClick={() => toggleWindow("about")} />
-          <DesktopIcon label="Projects" icon={<ProjectsImageIcon className="w-full h-full" />} onClick={() => toggleWindow("projects")} />
-          <DesktopIcon label="Skills" icon={<SkillsImageIcon className="w-full h-full" />} onClick={() => toggleWindow("skills")} />
-          <DesktopIcon label="Contact" icon={<ContactImageIcon className="w-full h-full" />} onClick={() => toggleWindow("contact")} />
-          <DesktopIcon label="Resume" icon={<ResumeImageIcon className="w-full h-full" />} onClick={() => toggleWindow("resume")} />
-        </motion.div>
+        <div className="relative w-full h-full">
+          <DesktopIcon label="About Me" icon={<AboutMeImageIcon className="w-full h-full" />} onClick={() => toggleWindow("about")} position={iconPositions.about} onDragEnd={(pos) => handleIconDragEnd("about", pos)} />
+          <DesktopIcon label="Projects" icon={<ProjectsImageIcon className="w-full h-full" />} onClick={() => toggleWindow("projects")} position={iconPositions.projects} onDragEnd={(pos) => handleIconDragEnd("projects", pos)} />
+          <DesktopIcon label="Skills" icon={<SkillsImageIcon className="w-full h-full" />} onClick={() => toggleWindow("skills")} position={iconPositions.skills} onDragEnd={(pos) => handleIconDragEnd("skills", pos)} />
+          <DesktopIcon label="Contact" icon={<ContactImageIcon className="w-full h-full" />} onClick={() => toggleWindow("contact")} position={iconPositions.contact} onDragEnd={(pos) => handleIconDragEnd("contact", pos)} />
+          <DesktopIcon label="Resume" icon={<ResumeImageIcon className="w-full h-full" />} onClick={() => toggleWindow("resume")} position={iconPositions.resume} onDragEnd={(pos) => handleIconDragEnd("resume", pos)} />
+        </div>
 
         {windows.about.isOpen && (
           <Window
