@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useRef, useCallback } from "react";
+import { ReactNode, useRef, useCallback, useState } from "react";
 import { motion } from "framer-motion";
 
 interface DesktopIconProps {
@@ -18,13 +18,14 @@ function snapToGrid(value: number) {
 }
 
 export default function DesktopIcon({ label, icon, onClick, position, onDragEnd }: DesktopIconProps) {
+  const [pos, setPos] = useState(position);
   const dragStart = useRef({ x: 0, y: 0 });
   const hasDragged = useRef(false);
 
   const handleDragStart = useCallback(() => {
-    dragStart.current = { ...position };
+    dragStart.current = { ...pos };
     hasDragged.current = false;
-  }, [position]);
+  }, [pos]);
 
   const handleDrag = useCallback((_: unknown, info: { offset: { x: number; y: number } }) => {
     if (Math.abs(info.offset.x) > 2 || Math.abs(info.offset.y) > 2) {
@@ -35,7 +36,9 @@ export default function DesktopIcon({ label, icon, onClick, position, onDragEnd 
   const handleDragEnd = useCallback((_: unknown, info: { offset: { x: number; y: number } }) => {
     const snappedX = snapToGrid(dragStart.current.x + info.offset.x);
     const snappedY = snapToGrid(dragStart.current.y + info.offset.y);
-    onDragEnd({ x: snappedX, y: snappedY });
+    const newPos = { x: snappedX, y: snappedY };
+    setPos(newPos);
+    onDragEnd(newPos);
     setTimeout(() => {
       hasDragged.current = false;
     }, 0);
@@ -55,7 +58,7 @@ export default function DesktopIcon({ label, icon, onClick, position, onDragEnd 
       onDrag={handleDrag}
       onDragEnd={handleDragEnd}
       onClick={handleClick}
-      animate={{ x: position.x, y: position.y }}
+      animate={{ x: pos.x, y: pos.y }}
       transition={{ type: "spring", stiffness: 300, damping: 25 }}
       className="absolute flex flex-col items-center gap-2 p-2 cursor-pointer transition-colors w-24 group select-none"
       style={{ left: 0, top: 0 }}
