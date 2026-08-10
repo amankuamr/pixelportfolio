@@ -75,13 +75,25 @@ export default function Taskbar({ windows, onToggleMinimize, onTaskbarContextMen
   };
 
   useEffect(() => {
-    const handleClickOutside = () => {
-      if (openPopup) {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const button = target.closest('button[data-popup]');
+
+      if (button) {
+        const popupName = button.getAttribute('data-popup');
+        if (popupName === openPopup) {
+          return;
+        }
+        setOpenPopup(null);
+      } else if (openPopup) {
         setOpenPopup(null);
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+
+    if (openPopup) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }
   }, [openPopup]);
 
   useEffect(() => {
@@ -223,6 +235,7 @@ export default function Taskbar({ windows, onToggleMinimize, onTaskbarContextMen
         {infoMoved && (
           <div className="relative">
             <button
+              data-popup="info"
               onClick={(e) => {
                 e.stopPropagation();
                 handleTogglePopup("info");
@@ -234,6 +247,7 @@ export default function Taskbar({ windows, onToggleMinimize, onTaskbarContextMen
             <AnimatePresence>
               {openPopup === "info" && (
                 <motion.div
+                  onMouseDown={(e) => e.stopPropagation()}
                   initial={{ opacity: 0, y: 10, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 10, scale: 0.95 }}
@@ -265,6 +279,7 @@ export default function Taskbar({ windows, onToggleMinimize, onTaskbarContextMen
 
         <div className="relative">
           <button
+            data-popup="arrow"
             onClick={(e) => {
               e.stopPropagation();
               handleTogglePopup("arrow");
@@ -275,7 +290,10 @@ export default function Taskbar({ windows, onToggleMinimize, onTaskbarContextMen
           </button>
           <AnimatePresence>
             {openPopup === "arrow" && (
-              <div ref={(el) => { popupRefs.current["arrow"] = el; }}>
+              <div
+                ref={(el) => { popupRefs.current["arrow"] = el; }}
+                onMouseDown={(e) => e.stopPropagation()}
+              >
                 {renderPopup(arrowPopupCategories)}
               </div>
             )}
@@ -284,6 +302,7 @@ export default function Taskbar({ windows, onToggleMinimize, onTaskbarContextMen
 
         <div className="relative">
           <button
+            data-popup="defender"
             onClick={(e) => {
               e.stopPropagation();
               handleTogglePopup("defender");
@@ -294,7 +313,10 @@ export default function Taskbar({ windows, onToggleMinimize, onTaskbarContextMen
           </button>
           <AnimatePresence>
             {openPopup === "defender" && (
-              <div ref={(el) => { popupRefs.current["defender"] = el; }}>
+              <div
+                ref={(el) => { popupRefs.current["defender"] = el; }}
+                onMouseDown={(e) => e.stopPropagation()}
+              >
                 {renderPopup(defenderPopupCategories)}
               </div>
             )}
@@ -303,6 +325,7 @@ export default function Taskbar({ windows, onToggleMinimize, onTaskbarContextMen
 
         <div className="relative">
           <button
+            data-popup="volume"
             onClick={(e) => {
               e.stopPropagation();
               handleTogglePopup("volume");
@@ -313,7 +336,10 @@ export default function Taskbar({ windows, onToggleMinimize, onTaskbarContextMen
           </button>
           <AnimatePresence>
             {openPopup === "volume" && (
-              <div ref={(el) => { popupRefs.current["volume"] = el; }}>
+              <div
+                ref={(el) => { popupRefs.current["volume"] = el; }}
+                onMouseDown={(e) => e.stopPropagation()}
+              >
                 {renderPopup(volumePopupCategories)}
               </div>
             )}
