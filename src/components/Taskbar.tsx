@@ -155,9 +155,9 @@ export default function Taskbar({ windows, onToggleMinimize }: TaskbarProps) {
           <button
             key={win.id}
             onClick={() => onToggleMinimize(win.id)}
-            className={`h-10 w-10 flex items-center justify-center border transition-colors ${
+            className={`h-10 w-10 flex items-center justify-center border transition-colors relative ${
               win.isMinimized ? "border-gray-600 bg-transparent hover:border-[#D9FF00] hover:bg-[#D9FF00]/10" : "border-[#D9FF00] bg-white/10 hover:bg-[#D9FF00]/20"
-            }`}
+            } ${win.isMinimized ? "shadow-[0_2px_0_#22c55e]" : ""}`}
           >
             <div className="w-6 h-6 flex items-center justify-center">{win.icon}</div>
           </button>

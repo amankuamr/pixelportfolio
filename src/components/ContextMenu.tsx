@@ -9,6 +9,7 @@ interface ContextMenuProps {
   onClose: () => void;
   isFullscreen: boolean;
   onToggleFullscreen: () => void;
+  onCheckVersion: () => void;
 }
 
 interface MenuItem {
@@ -24,7 +25,7 @@ interface SeparatorItem {
 
 type ContextMenuItem = MenuItem | SeparatorItem;
 
-export default function ContextMenu({ x, y, onClose, isFullscreen, onToggleFullscreen }: ContextMenuProps) {
+export default function ContextMenu({ x, y, onClose, isFullscreen, onToggleFullscreen, onCheckVersion }: ContextMenuProps) {
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const hoverTimeoutRef = useRef<number | null>(null);
@@ -109,7 +110,7 @@ export default function ContextMenu({ x, y, onClose, isFullscreen, onToggleFulls
                 }}
               >
                 <button
-                  onClick={item.label === "Full screen" ? onToggleFullscreen : undefined}
+                  onClick={item.label === "Full screen" ? onToggleFullscreen : item.label === "Check version" ? onCheckVersion : undefined}
                   className="group w-full flex items-center justify-between px-3 py-1.5 text-left bg-transparent hover:bg-[#D9FF00] hover:text-[#151F27] transition-colors duration-150"
                 >
                   <span className="text-sm text-gray-200 group-hover:text-[#151F27]">{item.label}</span>

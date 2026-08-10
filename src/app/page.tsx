@@ -7,6 +7,7 @@ import Window from "@/components/Window";
 import DesktopIcon from "@/components/DesktopIcon";
 import LoginScreen from "@/components/LoginScreen";
 import ContextMenu from "@/components/ContextMenu";
+import CmdWindow from "@/components/CmdWindow";
 import { SkillsImageIcon, AboutMeImageIcon, ProjectsImageIcon, ContactImageIcon, ResumeImageIcon } from "@/components/WindowsIcons";
 
 export default function Home() {
@@ -52,6 +53,7 @@ export default function Home() {
     skills: { isOpen: false, isMinimized: false },
     contact: { isOpen: false, isMinimized: false },
     resume: { isOpen: false, isMinimized: false },
+    cmd: { isOpen: false, isMinimized: false },
   });
 
   const toggleWindow = (name: keyof typeof windows) => {
@@ -102,6 +104,14 @@ export default function Home() {
     { id: "skills" as const, title: "Skills", icon: <SkillsImageIcon className="w-full h-full" />, isOpen: windows.skills.isOpen, isMinimized: windows.skills.isMinimized },
     { id: "contact" as const, title: "Contact", icon: <ContactImageIcon className="w-full h-full" />, isOpen: windows.contact.isOpen, isMinimized: windows.contact.isMinimized },
     { id: "resume" as const, title: "Resume", icon: <ResumeImageIcon className="w-full h-full" />, isOpen: windows.resume.isOpen, isMinimized: windows.resume.isMinimized },
+    { id: "cmd" as const, title: "Version", icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
+        <rect x="3" y="3" width="18" height="18" stroke="#D9FF00" strokeWidth="2" />
+        <line x1="7" y1="8" x2="17" y2="8" stroke="#D9FF00" strokeWidth="2" />
+        <line x1="7" y1="12" x2="17" y2="12" stroke="#D9FF00" strokeWidth="2" />
+        <line x1="7" y1="16" x2="13" y2="16" stroke="#D9FF00" strokeWidth="2" />
+      </svg>
+    ), isOpen: windows.cmd.isOpen, isMinimized: windows.cmd.isMinimized },
   ];
 
   return (
@@ -203,6 +213,31 @@ export default function Home() {
             </div>
           </Window>
         )}
+
+        {windows.cmd.isOpen && (
+          <CmdWindow
+            initialPosition={{ x: 250, y: 150 }}
+            initialSize={{ width: 620, height: 420 }}
+            title="Version"
+            initialLines={[
+              "Portfolio XP [Version 1.0.0]",
+              "(c) Aman Kumar. All rights reserved.",
+              "",
+              "This Windows-style portfolio was built with:",
+              "  - Next.js 16",
+              "  - React 19",
+              "  - Tailwind CSS v4",
+              "  - Framer Motion",
+              "  - TypeScript",
+              "",
+              "Designed & Developed by Aman Kumar",
+              "Visual Designer & Developer",
+            ]}
+            onClose={() => toggleWindow("cmd")}
+            onMinimize={() => toggleMinimize("cmd")}
+            isMinimized={windows.cmd.isMinimized}
+          />
+        )}
       </div>
 
       <Taskbar windows={taskbarWindows} onToggleMinimize={toggleMinimize} />
@@ -214,6 +249,10 @@ export default function Home() {
           onClose={closeContextMenu}
           isFullscreen={isFullscreen}
           onToggleFullscreen={toggleFullscreen}
+          onCheckVersion={() => {
+            toggleWindow("cmd");
+            setContextMenu(null);
+          }}
         />
       )}
 

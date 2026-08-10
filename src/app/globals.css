@@ -50,3 +50,26 @@ body {
 .font-extrabold {
   font-weight: 800;
 }
+
+.cmd-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.cmd-scrollbar::-webkit-scrollbar-track {
+  background: #000000;
+  border-left: 1px solid #1a2332;
+}
+
+.cmd-scrollbar::-webkit-scrollbar-thumb {
+  background: #00ff00;
+  border-radius: 0;
+}
+
+.cmd-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #00cc00;
+}
+
+.cmd-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #00ff00 #000000;
+}
