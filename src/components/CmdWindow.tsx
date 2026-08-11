@@ -11,6 +11,8 @@ interface CmdWindowProps {
   isMinimized?: boolean;
   title?: string;
   initialLines?: string[];
+  zIndex?: number;
+  onFocus?: () => void;
 }
 
 interface CommandHistory {
@@ -26,6 +28,8 @@ export default function CmdWindow({
   isMinimized = false,
   title = "Command Prompt",
   initialLines = [],
+  zIndex = 10,
+  onFocus,
 }: CmdWindowProps) {
   const [position, setPosition] = useState(initialPosition);
   const [isDragging, setIsDragging] = useState(false);
@@ -71,6 +75,7 @@ export default function CmdWindow({
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if ((e.target as HTMLElement).closest(".window-controls")) return;
+    onFocus?.();
     setIsDragging(true);
     setDragOffset({
       x: e.clientX - position.x,
@@ -213,7 +218,7 @@ export default function CmdWindow({
         top: position.y,
         width: initialSize.width,
         height: initialSize.height,
-        zIndex: isDragging ? 1000 : 10,
+        zIndex,
         borderRadius: 0,
       }}
     >

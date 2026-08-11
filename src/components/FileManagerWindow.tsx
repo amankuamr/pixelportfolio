@@ -22,6 +22,8 @@ interface FileManagerWindowProps {
   onClose?: () => void;
   onMinimize?: () => void;
   isMinimized?: boolean;
+  zIndex?: number;
+  onFocus?: () => void;
 }
 
 export default function FileManagerWindow({
@@ -34,6 +36,8 @@ export default function FileManagerWindow({
   onClose,
   onMinimize,
   isMinimized = false,
+  zIndex = 10,
+  onFocus,
 }: FileManagerWindowProps) {
   const [position, setPosition] = useState(initialPosition);
   const [isDragging, setIsDragging] = useState(false);
@@ -44,6 +48,7 @@ export default function FileManagerWindow({
   const handleMouseDown = (e: React.MouseEvent) => {
     if ((e.target as HTMLElement).closest(".window-controls")) return;
     if ((e.target as HTMLElement).closest("input")) return;
+    onFocus?.();
     setIsDragging(true);
     setDragOffset({
       x: e.clientX - position.x,
@@ -91,7 +96,7 @@ export default function FileManagerWindow({
         top: position.y,
         width: initialSize.width,
         height: initialSize.height,
-        zIndex: isDragging ? 1000 : 10,
+        zIndex,
         borderRadius: 0,
       }}
     >
