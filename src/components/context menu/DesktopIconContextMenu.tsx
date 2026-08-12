@@ -9,10 +9,11 @@ interface DesktopIconContextMenuProps {
   onOpen: () => void;
   onCopy: () => void;
   onRename: () => void;
+  onDelete: () => void;
   onProperties: () => void;
 }
 
-export default function DesktopIconContextMenu({ x, y, onClose, onOpen, onCopy, onRename, onProperties }: DesktopIconContextMenuProps) {
+export default function DesktopIconContextMenu({ x, y, onClose, onOpen, onCopy, onRename, onDelete, onProperties }: DesktopIconContextMenuProps) {
   return (
     <AnimatePresence>
       <motion.div
@@ -49,6 +50,13 @@ export default function DesktopIconContextMenu({ x, y, onClose, onOpen, onCopy, 
             className="group w-full flex items-center justify-between px-3 py-1.5 text-left bg-transparent hover:bg-[#D9FF00] hover:text-[#151F27] transition-colors duration-150"
           >
             <span className="text-sm text-gray-200 group-hover:text-[#151F27]">Rename</span>
+          </button>
+          <button
+            onMouseDown={(e) => e.stopPropagation()}
+            onClick={() => { onDelete(); onClose(); }}
+            className="group w-full flex items-center justify-between px-3 py-1.5 text-left bg-transparent hover:bg-red-500 hover:text-white transition-colors duration-150"
+          >
+            <span className="text-sm text-gray-200 group-hover:text-white">Delete</span>
           </button>
           <div className="my-1 border-t border-gray-700" />
           <button

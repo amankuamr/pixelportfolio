@@ -84,7 +84,7 @@ export default function DesktopIcon({ label, icon, onDoubleClick, position, onDr
       className="absolute flex flex-col items-center gap-2 p-2 cursor-pointer transition-colors w-24 group select-none"
       style={{ left: 0, top: 0 }}
     >
-      <div className="w-16 h-16 flex items-center justify-center border border-gray-400 group-hover:border-[#D9FF00] transition-colors">
+      <div className="w-16 h-16 flex items-center justify-center border border-gray-400 bg-[#D9FF00]/10 group-hover:border-[#D9FF00] group-hover:bg-[#D9FF00]/20 transition-colors">
         <div className="w-12 h-12 flex items-center justify-center">
           {icon}
         </div>
