@@ -13,6 +13,7 @@ import CmdWindow from "@/components/CmdWindow";
 import StartButtonContextMenu from "@/components/context menu/StartButtonContextMenu";
 import DesktopIconContextMenu from "@/components/context menu/DesktopIconContextMenu";
 import DeleteConfirmationPopup from "@/components/popups/DeleteConfirmationPopup";
+import OperaAbout from "@/components/OperaAbout";
 import { SkillsImageIcon, AboutMeImageIcon, ProjectsImageIcon, ContactImageIcon, ResumeImageIcon } from "@/components/WindowsIcons";
 import { ChevronLeft, ChevronRight, ChevronUp, Search } from "lucide-react";
 
@@ -440,6 +441,21 @@ export default function Home() {
 
           if (win.type === "cmd") {
             return null; // already handled above
+          }
+
+          if (win.type === "about") {
+            return (
+              <OperaAbout
+                key={win.id}
+                initialPosition={position}
+                initialSize={{ width: 900, height: 600 }}
+                onClose={() => closeWindow(win.id)}
+                onMinimize={() => toggleMinimize(win.id)}
+                isMinimized={win.isMinimized}
+                zIndex={activeWindow === win.id ? 100 : 10}
+                onFocus={() => handleWindowFocus(win.id)}
+              />
+            );
           }
 
           return (
