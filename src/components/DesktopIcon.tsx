@@ -73,6 +73,7 @@ export default function DesktopIcon({ label, icon, onDoubleClick, position, onDr
     <motion.div
       drag
       dragMomentum={false}
+      initial={{ x: pos.x, y: pos.y }}
       onDragStart={handleDragStart}
       onDrag={handleDrag}
       onDragEnd={handleDragEnd}

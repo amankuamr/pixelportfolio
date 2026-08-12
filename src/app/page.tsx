@@ -88,15 +88,18 @@ export default function Home() {
   const handlePasteIcon = () => {
     if (!copiedIcon) return;
     const copyCount = desktopIcons.filter((i) => i.label.startsWith(copiedIcon.label + " - Copy")).length + 1;
+    const baseX = contextMenu ? contextMenu.x : 20;
+    const baseY = contextMenu ? contextMenu.y : 20;
     const newIcon: DesktopIconData = {
       id: `${copiedIcon.id}-copy-${Date.now()}`,
       label: `${copiedIcon.label} - Copy (${copyCount})`,
       icon: copiedIcon.icon,
       windowId: copiedIcon.windowId,
-      position: { x: 20, y: 20 + desktopIcons.length * 100 },
+      position: { x: baseX, y: baseY },
     };
     setDesktopIcons((prev) => [...prev, newIcon]);
     setCopiedIcon(null);
+    setContextMenu(null);
   };
 
   const handleStartButtonContextMenuSelect = (item: string) => {
