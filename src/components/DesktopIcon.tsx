@@ -9,6 +9,11 @@ interface DesktopIconProps {
   onDoubleClick?: () => void;
   position: { x: number; y: number };
   onDragEnd: (position: { x: number; y: number }) => void;
+  onContextMenu?: (e: React.MouseEvent) => void;
+  isRenaming?: boolean;
+  renameValue?: string;
+  onRenameChange?: (value: string) => void;
+  onRenameSubmit?: () => void;
 }
 
 const GRID_SIZE = 100;
@@ -17,7 +22,7 @@ function snapToGrid(value: number) {
   return Math.round(value / GRID_SIZE) * GRID_SIZE;
 }
 
-export default function DesktopIcon({ label, icon, onDoubleClick, position, onDragEnd }: DesktopIconProps) {
+export default function DesktopIcon({ label, icon, onDoubleClick, position, onDragEnd, onContextMenu, isRenaming, renameValue, onRenameChange, onRenameSubmit }: DesktopIconProps) {
   const [pos, setPos] = useState(position);
   const dragStart = useRef({ x: 0, y: 0 });
   const hasDragged = useRef(false);
@@ -50,6 +55,20 @@ export default function DesktopIcon({ label, icon, onDoubleClick, position, onDr
     }
   }, [onDoubleClick]);
 
+  const handleContextMenu = useCallback((e: React.MouseEvent) => {
+    if (onContextMenu) {
+      onContextMenu(e);
+    }
+  }, [onContextMenu]);
+
+  const handleRenameKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      onRenameSubmit?.();
+    } else if (e.key === "Escape") {
+      onRenameSubmit?.();
+    }
+  }, [onRenameSubmit]);
+
   return (
     <motion.div
       drag
@@ -58,6 +77,7 @@ export default function DesktopIcon({ label, icon, onDoubleClick, position, onDr
       onDrag={handleDrag}
       onDragEnd={handleDragEnd}
       onDoubleClick={handleDoubleClick}
+      onContextMenu={handleContextMenu}
       animate={{ x: pos.x, y: pos.y }}
       transition={{ type: "spring", stiffness: 300, damping: 25 }}
       className="absolute flex flex-col items-center gap-2 p-2 cursor-pointer transition-colors w-24 group select-none"
@@ -68,9 +88,21 @@ export default function DesktopIcon({ label, icon, onDoubleClick, position, onDr
           {icon}
         </div>
       </div>
-      <span className="text-xs text-white text-center drop-shadow-md leading-tight line-clamp-2 font-medium">
-        {label}
-      </span>
+      {isRenaming ? (
+        <input
+          type="text"
+          value={renameValue}
+          onChange={(e) => onRenameChange?.(e.target.value)}
+          onKeyDown={handleRenameKeyDown}
+          onBlur={onRenameSubmit}
+          autoFocus
+          className="text-xs text-white text-center drop-shadow-md leading-tight line-clamp-2 font-medium bg-transparent border border-[#D9FF00] outline-none px-1 w-full"
+        />
+      ) : (
+        <span className="text-xs text-white text-center drop-shadow-md leading-tight line-clamp-2 font-medium">
+          {label}
+        </span>
+      )}
     </motion.div>
   );
 }

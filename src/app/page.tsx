@@ -11,6 +11,7 @@ import DesktopContextMenu from "@/components/context menu/DesktopContextMenu";
 import TaskbarContextMenu from "@/components/context menu/TaskbarContextMenu";
 import CmdWindow from "@/components/CmdWindow";
 import StartButtonContextMenu from "@/components/context menu/StartButtonContextMenu";
+import DesktopIconContextMenu from "@/components/context menu/DesktopIconContextMenu";
 import { SkillsImageIcon, AboutMeImageIcon, ProjectsImageIcon, ContactImageIcon, ResumeImageIcon } from "@/components/WindowsIcons";
 import { ChevronLeft, ChevronRight, ChevronUp, Search } from "lucide-react";
 
@@ -21,9 +22,81 @@ export default function Home() {
   const [taskbarContextMenu, setTaskbarContextMenu] = useState<{ id: string; x: number; y: number } | null>(null);
   const [startButtonContextMenuOpen, setStartButtonContextMenuOpen] = useState(false);
   const [activeWindow, setActiveWindow] = useState<string | null>(null);
+  const [copiedIcon, setCopiedIcon] = useState<{ id: string; label: string; icon: React.ReactNode; windowId: string } | null>(null);
+  const [iconContextMenu, setIconContextMenu] = useState<{ id: string; x: number; y: number } | null>(null);
+  const [renamingId, setRenamingId] = useState<string | null>(null);
+  const [renameValue, setRenameValue] = useState("");
+
+  interface DesktopIconData {
+    id: string;
+    label: string;
+    icon: React.ReactNode;
+    windowId: string;
+    position: { x: number; y: number };
+  }
+
+  const [desktopIcons, setDesktopIcons] = useState<DesktopIconData[]>([
+    { id: "about", label: "About Me", icon: <AboutMeImageIcon className="w-full h-full" />, windowId: "about", position: { x: 20, y: 20 } },
+    { id: "projects", label: "Projects", icon: <ProjectsImageIcon className="w-full h-full" />, windowId: "projects", position: { x: 20, y: 120 } },
+    { id: "skills", label: "Skills", icon: <SkillsImageIcon className="w-full h-full" />, windowId: "skills", position: { x: 20, y: 220 } },
+    { id: "contact", label: "Contact", icon: <ContactImageIcon className="w-full h-full" />, windowId: "contact", position: { x: 20, y: 320 } },
+    { id: "resume", label: "Resume", icon: <ResumeImageIcon className="w-full h-full" />, windowId: "resume", position: { x: 20, y: 420 } },
+  ]);
 
   const handleWindowFocus = (id: string) => {
     setActiveWindow(id);
+  };
+
+  const handleIconContextMenu = (id: string, x: number, y: number) => {
+    setIconContextMenu({ id, x, y });
+  };
+
+  const handleIconOpen = (id: string) => {
+    const icon = desktopIcons.find((i) => i.id === id);
+    if (icon) {
+      toggleWindow(icon.windowId as keyof typeof windows);
+    }
+  };
+
+  const handleIconCopy = (id: string) => {
+    const icon = desktopIcons.find((i) => i.id === id);
+    if (icon) {
+      setCopiedIcon({ id: icon.id, label: icon.label, icon: icon.icon, windowId: icon.windowId });
+    }
+  };
+
+  const handleIconRename = (id: string) => {
+    const icon = desktopIcons.find((i) => i.id === id);
+    if (icon) {
+      setRenamingId(id);
+      setRenameValue(icon.label);
+    }
+  };
+
+  const handleRenameSubmit = () => {
+    if (renamingId && renameValue.trim()) {
+      setDesktopIcons((prev) =>
+        prev.map((icon) =>
+          icon.id === renamingId ? { ...icon, label: renameValue.trim() } : icon
+        )
+      );
+    }
+    setRenamingId(null);
+    setRenameValue("");
+  };
+
+  const handlePasteIcon = () => {
+    if (!copiedIcon) return;
+    const copyCount = desktopIcons.filter((i) => i.label.startsWith(copiedIcon.label + " - Copy")).length + 1;
+    const newIcon: DesktopIconData = {
+      id: `${copiedIcon.id}-copy-${Date.now()}`,
+      label: `${copiedIcon.label} - Copy (${copyCount})`,
+      icon: copiedIcon.icon,
+      windowId: copiedIcon.windowId,
+      position: { x: 20, y: 20 + desktopIcons.length * 100 },
+    };
+    setDesktopIcons((prev) => [...prev, newIcon]);
+    setCopiedIcon(null);
   };
 
   const handleStartButtonContextMenuSelect = (item: string) => {
@@ -127,13 +200,16 @@ export default function Home() {
       if (startButtonContextMenuOpen) {
         setStartButtonContextMenuOpen(false);
       }
+      if (iconContextMenu) {
+        setIconContextMenu(null);
+      }
     };
 
-    if (contextMenu || taskbarContextMenu || startButtonContextMenuOpen) {
+    if (contextMenu || taskbarContextMenu || startButtonContextMenuOpen || iconContextMenu) {
       document.addEventListener("click", handleClick);
       return () => document.removeEventListener("click", handleClick);
     }
-  }, [contextMenu, taskbarContextMenu, startButtonContextMenuOpen]);
+  }, [contextMenu, taskbarContextMenu, startButtonContextMenuOpen, iconContextMenu]);
 
   const taskbarWindows = [
     { id: "about" as const, title: "About Me", icon: <AboutMeImageIcon className="w-full h-full" />, isOpen: windows.about.isOpen, isMinimized: windows.about.isMinimized },
@@ -157,11 +233,29 @@ export default function Home() {
 
       <div className="relative z-10 w-full h-full pb-12" onContextMenu={handleContextMenu}>
         <div className="relative w-full h-full">
-          <DesktopIcon label="About Me" icon={<AboutMeImageIcon className="w-full h-full" />} onDoubleClick={() => toggleWindow("about")} position={iconPositions.about} onDragEnd={(pos) => handleIconDragEnd("about", pos)} />
-          <DesktopIcon label="Projects" icon={<ProjectsImageIcon className="w-full h-full" />} onDoubleClick={() => toggleWindow("projects")} position={iconPositions.projects} onDragEnd={(pos) => handleIconDragEnd("projects", pos)} />
-          <DesktopIcon label="Skills" icon={<SkillsImageIcon className="w-full h-full" />} onDoubleClick={() => toggleWindow("skills")} position={iconPositions.skills} onDragEnd={(pos) => handleIconDragEnd("skills", pos)} />
-          <DesktopIcon label="Contact" icon={<ContactImageIcon className="w-full h-full" />} onDoubleClick={() => toggleWindow("contact")} position={iconPositions.contact} onDragEnd={(pos) => handleIconDragEnd("contact", pos)} />
-          <DesktopIcon label="Resume" icon={<ResumeImageIcon className="w-full h-full" />} onDoubleClick={() => toggleWindow("resume")} position={iconPositions.resume} onDragEnd={(pos) => handleIconDragEnd("resume", pos)} />
+          {desktopIcons.map((iconData) => (
+            <DesktopIcon
+              key={iconData.id}
+              label={iconData.label}
+              icon={iconData.icon}
+              onDoubleClick={() => handleIconOpen(iconData.id)}
+              position={iconData.position}
+              onDragEnd={(pos) => {
+                setDesktopIcons((prev) =>
+                  prev.map((icon) => (icon.id === iconData.id ? { ...icon, position: pos } : icon))
+                );
+              }}
+              onContextMenu={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleIconContextMenu(iconData.id, e.clientX, e.clientY);
+              }}
+              isRenaming={renamingId === iconData.id}
+              renameValue={renameValue}
+              onRenameChange={setRenameValue}
+              onRenameSubmit={handleRenameSubmit}
+            />
+          ))}
         </div>
 
         {windows.about.isOpen && (
@@ -332,6 +426,8 @@ export default function Home() {
             toggleWindow("cmd");
             setContextMenu(null);
           }}
+          onPaste={handlePasteIcon}
+          showPaste={!!copiedIcon}
         />
       )}
 
@@ -342,6 +438,18 @@ export default function Home() {
           windowTitle={taskbarWindows.find((w) => w.id === taskbarContextMenu.id)?.title || ""}
           onClose={() => setTaskbarContextMenu(null)}
           onCloseWindow={closeWindow}
+        />
+      )}
+
+      {iconContextMenu && (
+        <DesktopIconContextMenu
+          x={iconContextMenu.x}
+          y={iconContextMenu.y}
+          onClose={() => setIconContextMenu(null)}
+          onOpen={() => handleIconOpen(iconContextMenu.id)}
+          onCopy={() => handleIconCopy(iconContextMenu.id)}
+          onRename={() => handleIconRename(iconContextMenu.id)}
+          onProperties={() => {}}
         />
       )}
 

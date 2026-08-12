@@ -9,6 +9,8 @@ interface ContextMenuProps {
   isFullscreen: boolean;
   onToggleFullscreen: () => void;
   onCheckVersion: () => void;
+  onPaste?: () => void;
+  showPaste?: boolean;
 }
 
 interface MenuItem {
@@ -24,7 +26,7 @@ interface SeparatorItem {
 
 type ContextMenuItem = MenuItem | SeparatorItem;
 
-export default function DesktopContextMenu({ x, y, isFullscreen, onToggleFullscreen, onCheckVersion }: ContextMenuProps) {
+export default function DesktopContextMenu({ x, y, isFullscreen, onToggleFullscreen, onCheckVersion, onPaste, showPaste }: ContextMenuProps) {
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const hoverTimeoutRef = useRef<number | null>(null);
@@ -36,6 +38,7 @@ export default function DesktopContextMenu({ x, y, isFullscreen, onToggleFullscr
       { label: "Ascending" },
       { label: "Descending" },
     ]},
+    ...(showPaste ? [{ label: "Paste" }] : []),
     { label: "Check version" },
     { type: "separator" as const },
     { label: "Full screen", active: isFullscreen },
@@ -109,7 +112,7 @@ export default function DesktopContextMenu({ x, y, isFullscreen, onToggleFullscr
                 }}
               >
                 <button
-                  onClick={item.label === "Full screen" ? onToggleFullscreen : item.label === "Check version" ? onCheckVersion : undefined}
+                  onClick={item.label === "Full screen" ? onToggleFullscreen : item.label === "Check version" ? onCheckVersion : item.label === "Paste" && onPaste ? onPaste : undefined}
                   className="group w-full flex items-center justify-between px-3 py-1.5 text-left bg-transparent hover:bg-[#D9FF00] hover:text-[#151F27] transition-colors duration-150"
                 >
                   <span className="text-sm text-gray-200 group-hover:text-[#151F27]">{item.label}</span>
