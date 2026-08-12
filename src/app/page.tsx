@@ -157,11 +157,11 @@ export default function Home() {
 
       <div className="relative z-10 w-full h-full pb-12" onContextMenu={handleContextMenu}>
         <div className="relative w-full h-full">
-          <DesktopIcon label="About Me" icon={<AboutMeImageIcon className="w-full h-full" />} onClick={() => toggleWindow("about")} position={iconPositions.about} onDragEnd={(pos) => handleIconDragEnd("about", pos)} />
-          <DesktopIcon label="Projects" icon={<ProjectsImageIcon className="w-full h-full" />} onClick={() => toggleWindow("projects")} position={iconPositions.projects} onDragEnd={(pos) => handleIconDragEnd("projects", pos)} />
-          <DesktopIcon label="Skills" icon={<SkillsImageIcon className="w-full h-full" />} onClick={() => toggleWindow("skills")} position={iconPositions.skills} onDragEnd={(pos) => handleIconDragEnd("skills", pos)} />
-          <DesktopIcon label="Contact" icon={<ContactImageIcon className="w-full h-full" />} onClick={() => toggleWindow("contact")} position={iconPositions.contact} onDragEnd={(pos) => handleIconDragEnd("contact", pos)} />
-          <DesktopIcon label="Resume" icon={<ResumeImageIcon className="w-full h-full" />} onClick={() => toggleWindow("resume")} position={iconPositions.resume} onDragEnd={(pos) => handleIconDragEnd("resume", pos)} />
+          <DesktopIcon label="About Me" icon={<AboutMeImageIcon className="w-full h-full" />} onDoubleClick={() => toggleWindow("about")} position={iconPositions.about} onDragEnd={(pos) => handleIconDragEnd("about", pos)} />
+          <DesktopIcon label="Projects" icon={<ProjectsImageIcon className="w-full h-full" />} onDoubleClick={() => toggleWindow("projects")} position={iconPositions.projects} onDragEnd={(pos) => handleIconDragEnd("projects", pos)} />
+          <DesktopIcon label="Skills" icon={<SkillsImageIcon className="w-full h-full" />} onDoubleClick={() => toggleWindow("skills")} position={iconPositions.skills} onDragEnd={(pos) => handleIconDragEnd("skills", pos)} />
+          <DesktopIcon label="Contact" icon={<ContactImageIcon className="w-full h-full" />} onDoubleClick={() => toggleWindow("contact")} position={iconPositions.contact} onDragEnd={(pos) => handleIconDragEnd("contact", pos)} />
+          <DesktopIcon label="Resume" icon={<ResumeImageIcon className="w-full h-full" />} onDoubleClick={() => toggleWindow("resume")} position={iconPositions.resume} onDragEnd={(pos) => handleIconDragEnd("resume", pos)} />
         </div>
 
         {windows.about.isOpen && (

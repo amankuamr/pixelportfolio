@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 interface DesktopIconProps {
   label: string;
   icon: ReactNode;
-  onClick?: () => void;
+  onDoubleClick?: () => void;
   position: { x: number; y: number };
   onDragEnd: (position: { x: number; y: number }) => void;
 }
@@ -17,7 +17,7 @@ function snapToGrid(value: number) {
   return Math.round(value / GRID_SIZE) * GRID_SIZE;
 }
 
-export default function DesktopIcon({ label, icon, onClick, position, onDragEnd }: DesktopIconProps) {
+export default function DesktopIcon({ label, icon, onDoubleClick, position, onDragEnd }: DesktopIconProps) {
   const [pos, setPos] = useState(position);
   const dragStart = useRef({ x: 0, y: 0 });
   const hasDragged = useRef(false);
@@ -44,11 +44,11 @@ export default function DesktopIcon({ label, icon, onClick, position, onDragEnd 
     }, 0);
   }, [onDragEnd]);
 
-  const handleClick = useCallback(() => {
-    if (!hasDragged.current && onClick) {
-      onClick();
+  const handleDoubleClick = useCallback(() => {
+    if (!hasDragged.current && onDoubleClick) {
+      onDoubleClick();
     }
-  }, [onClick]);
+  }, [onDoubleClick]);
 
   return (
     <motion.div
@@ -57,7 +57,7 @@ export default function DesktopIcon({ label, icon, onClick, position, onDragEnd 
       onDragStart={handleDragStart}
       onDrag={handleDrag}
       onDragEnd={handleDragEnd}
-      onClick={handleClick}
+      onDoubleClick={handleDoubleClick}
       animate={{ x: pos.x, y: pos.y }}
       transition={{ type: "spring", stiffness: 300, damping: 25 }}
       className="absolute flex flex-col items-center gap-2 p-2 cursor-pointer transition-colors w-24 group select-none"
