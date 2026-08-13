@@ -33,16 +33,14 @@ export default function OperaAbout({
   const [position, setPosition] = useState(initialPosition);
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
-  const [activeTab, setActiveTab] = useState("start");
+  const [activeTab, setActiveTab] = useState("about");
   const [searchFocused, setSearchFocused] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("Aman Kumar");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [iframeSrc, setIframeSrc] = useState<string>("");
 
   const [tabs, setTabs] = useState<Tab[]>([
-    { id: "start", label: "Aman Kumar", icon: <Home className="w-3 h-3" /> },
-    { id: "about", label: "About Me" },
-    { id: "projects", label: "Projects" },
-    { id: "skills", label: "Skills" },
-    { id: "contact", label: "Contact" },
+    { id: "about", label: "About" },
+    { id: "google", label: "Google" },
   ]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -82,7 +80,7 @@ export default function OperaAbout({
   }, [isDragging, dragOffset]);
 
   const closeTab = (tabId: string) => {
-    if (tabId === "start") return;
+    if (tabId === "about") return;
     setTabs((prev) => {
       const newTabs = prev.filter((t) => t.id !== tabId);
       if (activeTab === tabId && newTabs.length > 0) {
@@ -92,23 +90,19 @@ export default function OperaAbout({
     });
   };
 
-  const openTab = (tabId: string) => {
-    if (!tabs.find((t) => t.id === tabId)) {
-      const tabLabels: Record<string, string> = {
-        about: "About Me",
-        projects: "Projects",
-        skills: "Skills",
-        contact: "Contact",
-        resume: "Resume",
-      };
-      setTabs((prev) => [...prev, { id: tabId, label: tabLabels[tabId] || tabId }]);
+  const handleSearch = () => {
+    const query = searchQuery.trim();
+    if (!query) return;
+
+    if (activeTab === "google") {
+      const url = `https://en.wikipedia.org/wiki/Special:Search?search=${encodeURIComponent(query)}`;
+      setIframeSrc(url);
     }
-    setActiveTab(tabId);
   };
 
   const renderContent = () => {
     switch (activeTab) {
-      case "start":
+      case "about":
         return (
           <div className="h-full overflow-auto" style={{ backgroundColor: "#151F27" }}>
             <div className="flex flex-col items-center pt-10 pb-6">
@@ -130,11 +124,17 @@ export default function OperaAbout({
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        handleSearch();
+                      }
+                    }}
                     className="flex-1 bg-transparent border-none outline-none text-base text-gray-200 placeholder:text-gray-500"
                     onFocus={() => setSearchFocused(true)}
                     onBlur={() => setSearchFocused(false)}
+                    placeholder="Search..."
                   />
-                  <button className="w-8 h-8 flex items-center justify-center bg-[#D9FF00] hover:bg-[#c2e600] transition-colors shrink-0" style={{ borderRadius: 0 }}>
+                  <button onClick={handleSearch} className="w-8 h-8 flex items-center justify-center bg-[#D9FF00] hover:bg-[#c2e600] transition-colors shrink-0" style={{ borderRadius: 0 }}>
                     <Search className="w-4 h-4 text-[#151F27]" />
                   </button>
                 </div>
@@ -201,71 +201,30 @@ export default function OperaAbout({
           </div>
         );
 
-      case "about":
+      case "google":
         return (
-          <div className="h-full overflow-auto p-6" style={{ backgroundColor: "#151F27" }}>
-            <div className="space-y-4">
-              <h2 className="text-3xl font-bold text-[#D9FF00]">Hello, I&apos;m a Designer</h2>
-              <p className="text-gray-300 font-light text-lg">
-                I create beautiful and functional user experiences. Welcome to my portfolio!
-              </p>
-              <div className="border-t border-gray-700 pt-4 mt-4">
-                <p className="text-sm text-gray-400">
-                  I am a passionate designer and developer with expertise in creating seamless digital experiences.
-                  With a keen eye for detail and a love for clean, modern aesthetics, I bring ideas to life through code and design.
-                </p>
+          <div className="h-full w-full" style={{ backgroundColor: "#151F27" }}>
+            {iframeSrc ? (
+              <iframe
+                src={iframeSrc}
+                title="Search Results"
+                className="w-full h-full border border-gray-700"
+                style={{
+                  borderRadius: 0,
+                  backgroundColor: "#fff",
+                }}
+                sandbox="allow-scripts allow-same-origin allow-forms"
+              />
+            ) : (
+              <div className="w-full h-full border border-gray-700 flex items-center justify-center" style={{ borderRadius: 0, backgroundColor: "#1a2332" }}>
+                <div className="text-center">
+                  <p className="text-sm text-gray-400 mb-2">Wikipedia Search</p>
+                  <p className="text-xs text-gray-500">
+                    Use the address bar above to search. Results will appear here.
+                  </p>
+                </div>
               </div>
-            </div>
-          </div>
-        );
-
-      case "projects":
-        return (
-          <div className="h-full overflow-auto p-6" style={{ backgroundColor: "#151F27" }}>
-            <div className="space-y-4">
-              <h2 className="text-3xl font-bold text-[#D9FF00]">My Projects</h2>
-              <p className="text-gray-300 font-light text-lg">Check out my latest work here.</p>
-              <div className="grid grid-cols-2 gap-4 mt-6">
-                {["Portfolio XP", "Design System", "Mobile App"].map((project, i) => (
-                  <div key={i} className="border border-gray-700 p-4 hover:border-[#D9FF00] hover:bg-[#D9FF00]/5 transition-colors cursor-pointer" style={{ borderRadius: 0 }}>
-                    <h3 className="text-lg font-semibold text-gray-200 mb-2">{project}</h3>
-                    <p className="text-sm text-gray-400">Project description goes here.</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        );
-
-      case "skills":
-        return (
-          <div className="h-full overflow-auto p-6" style={{ backgroundColor: "#151F27" }}>
-            <div className="space-y-4">
-              <h2 className="text-3xl font-bold text-[#D9FF00]">Skills</h2>
-              <p className="text-gray-300 font-light text-lg">My technical and design skills.</p>
-              <div className="flex flex-wrap gap-2 mt-6">
-                {["React", "Next.js", "TypeScript", "Tailwind CSS", "Figma", "Framer Motion", "UI/UX Design", "Node.js"].map((skill, i) => (
-                  <span key={i} className="px-3 py-1 border border-gray-700 text-sm text-gray-300 hover:border-[#D9FF00] hover:text-[#D9FF00] transition-colors cursor-default" style={{ borderRadius: 0 }}>
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        );
-
-      case "contact":
-        return (
-          <div className="h-full overflow-auto p-6" style={{ backgroundColor: "#151F27" }}>
-            <div className="space-y-4">
-              <h2 className="text-3xl font-bold text-[#D9FF00]">Contact</h2>
-              <p className="text-gray-300 font-light text-lg">Get in touch with me.</p>
-              <div className="border-t border-gray-700 pt-4 mt-4 space-y-3">
-                <p className="text-sm text-gray-300">Email: aman@example.com</p>
-                <p className="text-sm text-gray-300">GitHub: github.com/amankumar</p>
-                <p className="text-sm text-gray-300">LinkedIn: linkedin.com/in/amankumar</p>
-              </div>
-            </div>
+            )}
           </div>
         );
 
@@ -302,43 +261,23 @@ export default function OperaAbout({
           </svg>
         </div>
 
-        <button
-          onClick={() => setActiveTab("start")}
-          className={`w-8 h-8 flex items-center justify-center border transition-colors ${activeTab === "start" ? "border-[#D9FF00] bg-[#D9FF00]/10" : "border-transparent hover:border-gray-600 hover:bg-gray-700/30"}`}
-          style={{ borderRadius: 0 }}
-        >
+        <button className="w-8 h-8 flex items-center justify-center border border-transparent hover:border-gray-600 hover:bg-gray-700/30 transition-colors" style={{ borderRadius: 0 }}>
           <Home className="w-4 h-4 text-gray-300" />
         </button>
 
-        <button
-          onClick={() => openTab("about")}
-          className={`w-8 h-8 flex items-center justify-center border transition-colors ${activeTab === "about" ? "border-[#D9FF00] bg-[#D9FF00]/10" : "border-transparent hover:border-gray-600 hover:bg-gray-700/30"}`}
-          style={{ borderRadius: 0 }}
-        >
+        <button className="w-8 h-8 flex items-center justify-center border border-transparent hover:border-gray-600 hover:bg-gray-700/30 transition-colors" style={{ borderRadius: 0 }}>
           <Star className="w-4 h-4 text-gray-300" />
         </button>
 
-        <button
-          onClick={() => openTab("projects")}
-          className={`w-8 h-8 flex items-center justify-center border transition-colors ${activeTab === "projects" ? "border-[#D9FF00] bg-[#D9FF00]/10" : "border-transparent hover:border-gray-600 hover:bg-gray-700/30"}`}
-          style={{ borderRadius: 0 }}
-        >
+        <button className="w-8 h-8 flex items-center justify-center border border-transparent hover:border-gray-600 hover:bg-gray-700/30 transition-colors" style={{ borderRadius: 0 }}>
           <FolderOpen className="w-4 h-4 text-gray-300" />
         </button>
 
-        <button
-          onClick={() => openTab("skills")}
-          className={`w-8 h-8 flex items-center justify-center border transition-colors ${activeTab === "skills" ? "border-[#D9FF00] bg-[#D9FF00]/10" : "border-transparent hover:border-gray-600 hover:bg-gray-700/30"}`}
-          style={{ borderRadius: 0 }}
-        >
+        <button className="w-8 h-8 flex items-center justify-center border border-transparent hover:border-gray-600 hover:bg-gray-700/30 transition-colors" style={{ borderRadius: 0 }}>
           <Briefcase className="w-4 h-4 text-gray-300" />
         </button>
 
-        <button
-          onClick={() => openTab("contact")}
-          className={`w-8 h-8 flex items-center justify-center border transition-colors ${activeTab === "contact" ? "border-[#D9FF00] bg-[#D9FF00]/10" : "border-transparent hover:border-gray-600 hover:bg-gray-700/30"}`}
-          style={{ borderRadius: 0 }}
-        >
+        <button className="w-8 h-8 flex items-center justify-center border border-transparent hover:border-gray-600 hover:bg-gray-700/30 transition-colors" style={{ borderRadius: 0 }}>
           <Mail className="w-4 h-4 text-gray-300" />
         </button>
 
@@ -442,7 +381,14 @@ export default function OperaAbout({
               <Search className="w-3.5 h-3.5 text-gray-400 shrink-0" />
               <input
                 type="text"
-                placeholder="Search or enter address"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && activeTab === "google") {
+                    handleSearch();
+                  }
+                }}
+                placeholder={activeTab === "google" ? "Search Wikipedia or type a URL" : "Search or enter address"}
                 className="flex-1 bg-transparent border-none outline-none text-sm text-gray-200 placeholder:text-gray-500"
                 onFocus={() => setSearchFocused(true)}
                 onBlur={() => setSearchFocused(false)}
