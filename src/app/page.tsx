@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Background from "@/components/Background";
 import Taskbar from "@/components/Taskbar";
 import Window from "@/components/Window";
-import FileManagerWindow from "@/components/FileManagerWindow";
+import FileManagerWindow from "@/components/windows/FileManagerWindow";
 import DesktopIcon from "@/components/DesktopIcon";
 import LoginScreen from "@/components/LoginScreen";
 import DesktopContextMenu from "@/components/context menu/DesktopContextMenu";
@@ -13,7 +13,8 @@ import CmdWindow from "@/components/CmdWindow";
 import StartButtonContextMenu from "@/components/context menu/StartButtonContextMenu";
 import DesktopIconContextMenu from "@/components/context menu/DesktopIconContextMenu";
 import DeleteConfirmationPopup from "@/components/popups/DeleteConfirmationPopup";
-import OperaAbout from "@/components/OperaAbout";
+import OperaAbout from "@/components/windows/OperaAbout";
+import PersonalizationWindow from "@/components/windows/PersonalizationWindow";
 import { SkillsImageIcon, AboutMeImageIcon, ProjectsImageIcon, ContactImageIcon, ResumeImageIcon } from "@/components/WindowsIcons";
 import { ChevronLeft, ChevronRight, ChevronUp, Search } from "lucide-react";
 
@@ -190,6 +191,7 @@ export default function Home() {
       contact: { x: 350, y: 220 },
       resume: { x: 450, y: 160 },
       cmd: { x: 250, y: 150 },
+      personalization: { x: 400, y: 150 },
     };
     const basePos = positionOffsets[type] || { x: 300, y: 150 };
     const newWindow: WindowInstance = {
@@ -218,6 +220,11 @@ export default function Home() {
     setWindows((prev) =>
       prev.map((w) => (w.id === id ? { ...w, isMaximized: !w.isMaximized } : w))
     );
+  };
+
+  const handlePersonalize = () => {
+    openWindow("personalization");
+    setContextMenu(null);
   };
 
   const [iconPositions, setIconPositions] = useState<{ [key: string]: { x: number; y: number } }>({
@@ -468,6 +475,21 @@ export default function Home() {
             );
           }
 
+          if (win.type === "personalization") {
+            return (
+              <PersonalizationWindow
+                key={win.id}
+                initialPosition={position}
+                initialSize={{ width: 850, height: 550 }}
+                onClose={() => closeWindow(win.id)}
+                onMinimize={() => toggleMinimize(win.id)}
+                isMinimized={win.isMinimized}
+                zIndex={activeWindow === win.id ? 100 : 10}
+                onFocus={() => handleWindowFocus(win.id)}
+              />
+            );
+          }
+
           return (
             <FileManagerWindow
               key={win.id}
@@ -506,6 +528,7 @@ export default function Home() {
             openWindow("cmd");
             setContextMenu(null);
           }}
+          onPersonalize={handlePersonalize}
           onPaste={handlePasteIcon}
           showPaste={!!copiedIcon}
         />
