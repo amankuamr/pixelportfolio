@@ -172,6 +172,7 @@ export default function Home() {
     type: string;
     isOpen: boolean;
     isMinimized: boolean;
+    isMaximized: boolean;
     positionOffset: number;
   }
 
@@ -196,6 +197,7 @@ export default function Home() {
       type,
       isOpen: true,
       isMinimized: false,
+      isMaximized: false,
       positionOffset: existingCount * 30,
     };
     setWindows((prev) => [...prev, newWindow]);
@@ -209,6 +211,12 @@ export default function Home() {
   const toggleMinimize = (id: string) => {
     setWindows((prev) =>
       prev.map((w) => (w.id === id ? { ...w, isMinimized: !w.isMinimized } : w))
+    );
+  };
+
+  const toggleMaximize = (id: string) => {
+    setWindows((prev) =>
+      prev.map((w) => (w.id === id ? { ...w, isMaximized: !w.isMaximized } : w))
     );
   };
 
@@ -451,7 +459,9 @@ export default function Home() {
                 initialSize={{ width: 900, height: 600 }}
                 onClose={() => closeWindow(win.id)}
                 onMinimize={() => toggleMinimize(win.id)}
+                onMaximize={() => toggleMaximize(win.id)}
                 isMinimized={win.isMinimized}
+                isMaximized={win.isMaximized}
                 zIndex={activeWindow === win.id ? 100 : 10}
                 onFocus={() => handleWindowFocus(win.id)}
               />
