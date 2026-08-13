@@ -18,6 +18,7 @@ interface OperaAboutProps {
 interface Tab {
   id: string;
   label: string;
+  type?: "about" | "wiki";
   icon?: React.ReactNode;
 }
 
@@ -36,11 +37,11 @@ export default function OperaAbout({
   const [activeTab, setActiveTab] = useState("about");
   const [searchFocused, setSearchFocused] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [iframeSrc, setIframeSrc] = useState<string>("");
+  const [tabSources, setTabSources] = useState<Record<string, string>>({});
 
   const [tabs, setTabs] = useState<Tab[]>([
-    { id: "about", label: "About" },
-    { id: "google", label: "Google" },
+    { id: "about", label: "About", type: "about" },
+    { id: "wiki-1", label: "Wikipedia", type: "wiki" },
   ]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -79,6 +80,8 @@ export default function OperaAbout({
     };
   }, [isDragging, dragOffset]);
 
+  const MAX_TABS = 6;
+
   const closeTab = (tabId: string) => {
     if (tabId === "about") return;
     setTabs((prev) => {
@@ -90,13 +93,21 @@ export default function OperaAbout({
     });
   };
 
+  const addTab = () => {
+    if (tabs.length >= MAX_TABS) return;
+    const id = `wiki-${Date.now()}`;
+    setTabs((prev) => [...prev, { id, label: "Wikipedia", type: "wiki" }]);
+    setActiveTab(id);
+  };
+
   const handleSearch = () => {
     const query = searchQuery.trim();
     if (!query) return;
 
-    if (activeTab === "google") {
+    const currentTab = tabs.find((t) => t.id === activeTab);
+    if (currentTab?.type === "wiki") {
       const url = `https://en.wikipedia.org/wiki/Special:Search?search=${encodeURIComponent(query)}`;
-      setIframeSrc(url);
+      setTabSources((prev) => ({ ...prev, [activeTab]: url }));
     }
   };
 
@@ -202,11 +213,18 @@ export default function OperaAbout({
         );
 
       case "google":
+      case "wiki-1":
+      default: {
+        const currentTab = tabs.find((t) => t.id === activeTab);
+        if (currentTab?.type !== "wiki") {
+          return null;
+        }
+        const src = tabSources[activeTab] || "";
         return (
           <div className="h-full w-full" style={{ backgroundColor: "#151F27" }}>
-            {iframeSrc ? (
+            {src ? (
               <iframe
-                src={iframeSrc}
+                src={src}
                 title="Search Results"
                 className="w-full h-full border border-gray-700"
                 style={{
@@ -227,9 +245,7 @@ export default function OperaAbout({
             )}
           </div>
         );
-
-      default:
-        return null;
+      }
     }
   };
 
@@ -312,17 +328,28 @@ export default function OperaAbout({
                     e.stopPropagation();
                     closeTab(tab.id);
                   }}
-                  className="w-4 h-4 flex items-center justify-center opacity-0 group-hover:opacity-100 hover:bg-[#D9FF00]/20 transition-opacity"
+                  className="w-5 h-5 flex items-center justify-center hover:bg-[#D9FF00]/20 transition-colors"
                   style={{ borderRadius: 0 }}
                 >
-                  <svg viewBox="0 0 24 24" fill="none" className="w-3 h-3 text-gray-400 hover:text-[#D9FF00]">
-                    <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" strokeWidth="2" />
-                    <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" strokeWidth="2" />
+                  <svg viewBox="0 0 24 24" fill="none" className="w-3.5 h-3.5 text-gray-400 hover:text-[#D9FF00]">
+                    <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" strokeWidth="2.5" />
+                    <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" strokeWidth="2.5" />
                   </svg>
                 </button>
               )}
             </div>
           ))}
+          <button
+            onClick={addTab}
+            disabled={tabs.length >= MAX_TABS}
+            className="w-6 h-6 flex items-center justify-center border border-gray-600 hover:border-[#D9FF00] hover:bg-[#D9FF00]/10 transition-colors text-gray-400 hover:text-[#D9FF00] disabled:opacity-30 disabled:cursor-not-allowed"
+            style={{ borderRadius: 0 }}
+          >
+            <svg viewBox="0 0 24 24" fill="none" className="w-3.5 h-3.5">
+              <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" strokeWidth="2.5" />
+              <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" strokeWidth="2.5" />
+            </svg>
+          </button>
 
           <div className="ml-auto flex items-center gap-1">
             <button className="w-6 h-6 flex items-center justify-center hover:bg-[#D9FF00]/10 transition-colors" style={{ borderRadius: 0 }}>
@@ -384,11 +411,15 @@ export default function OperaAbout({
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter" && activeTab === "google") {
+                  if (e.key === "Enter" && tabs.find((t) => t.id === activeTab)?.type === "wiki") {
                     handleSearch();
                   }
                 }}
-                placeholder={activeTab === "google" ? "Search Wikipedia or type a URL" : "Search or enter address"}
+                placeholder={
+                  tabs.find((t) => t.id === activeTab)?.type === "wiki"
+                    ? "Search Wikipedia or type a URL"
+                    : "Search or enter address"
+                }
                 className="flex-1 bg-transparent border-none outline-none text-sm text-gray-200 placeholder:text-gray-500"
                 onFocus={() => setSearchFocused(true)}
                 onBlur={() => setSearchFocused(false)}
