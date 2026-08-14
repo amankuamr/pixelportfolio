@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import CustomCursor from "@/components/CustomCursor";
+import AccentInitializer from "@/components/AccentInitializer";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -37,6 +38,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${agern.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-transparent">
+        <AccentInitializer />
         {children}
         <CustomCursor />
       </body>

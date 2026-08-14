@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, LayoutList, Plus, ChevronDown } from "lucide-react";
+import { Search, LayoutList, Plus, ChevronDown, ExternalLink } from "lucide-react";
 
 interface Folder {
   name: string;
@@ -78,6 +78,129 @@ interface ProjectsFileManagerProps {
   onFolderClick: (folderName: string) => void;
 }
 
+interface FolderDetail {
+  title: string;
+  duration: string;
+  type: string;
+  description: string;
+  liveUrl?: string;
+}
+
+const folderDetails: Record<string, FolderDetail> = {
+  "Logo Design": {
+    title: "Brand Identity System",
+    duration: "2 Weeks",
+    type: "Client",
+    description: "Complete logo and visual identity design including color palette, typography, and brand guidelines for a modern tech startup.",
+    liveUrl: "https://example.com/logo-design",
+  },
+  Branding: {
+    title: "Luxury Brand Refresh",
+    duration: "1 Month",
+    type: "Project",
+    description: "End-to-end branding for a luxury fashion house, covering stationery, packaging, and digital assets.",
+    liveUrl: "https://example.com/branding",
+  },
+  Illustrations: {
+    title: "Children's Book Illustrations",
+    duration: "3 Weeks",
+    type: "Self",
+    description: "A series of playful, story-driven illustrations for an educational children's book series.",
+    liveUrl: "https://example.com/illustrations",
+  },
+  Posters: {
+    title: "Event Poster Campaign",
+    duration: "5 Days",
+    type: "Client",
+    description: "High-impact poster designs for a music festival with bold typography and vibrant gradients.",
+    liveUrl: "https://example.com/posters",
+  },
+  "Social Media": {
+    title: "Social Media Kit",
+    duration: "1 Week",
+    type: "Project",
+    description: "Templates and creative assets for consistent social media presence across multiple platforms.",
+    liveUrl: "https://example.com/social-media",
+  },
+  Packaging: {
+    title: "Product Packaging Design",
+    duration: "2 Weeks",
+    type: "Client",
+    description: "Structural and visual packaging design for an organic skincare line with eco-friendly materials.",
+    liveUrl: "https://example.com/packaging",
+  },
+  Ecommerce: {
+    title: "E-commerce Platform UI",
+    duration: "1 Month",
+    type: "Client",
+    description: "Full product browsing, checkout, and account experience for a multi-vendor marketplace.",
+    liveUrl: "https://example.com/ecommerce",
+  },
+  Portfolio: {
+    title: "Developer Portfolio",
+    duration: "1 Week",
+    type: "Self",
+    description: "Minimal dark-themed portfolio with smooth transitions and project storytelling.",
+    liveUrl: "https://example.com/portfolio",
+  },
+  Dashboard: {
+    title: "Analytics Dashboard",
+    duration: "3 Weeks",
+    type: "Project",
+    description: "Data-rich dashboard with charts, filters, and role-based views for SaaS operators.",
+    liveUrl: "https://example.com/dashboard",
+  },
+  "Landing Pages": {
+    title: "SaaS Landing Page",
+    duration: "4 Days",
+    type: "Client",
+    description: "Conversion-focused landing page with hero, features, pricing, and FAQ sections.",
+    liveUrl: "https://example.com/landing-pages",
+  },
+  Blogs: {
+    title: "Editorial Blog Layout",
+    duration: "1 Week",
+    type: "Self",
+    description: "Clean typography-first blog template optimized for readability and content sharing.",
+    liveUrl: "https://example.com/blogs",
+  },
+  "Mobile Apps": {
+    title: "Fitness Mobile App",
+    duration: "1 Month",
+    type: "Project",
+    description: "Mobile UX for workout tracking, nutrition logging, and progress insights.",
+    liveUrl: "https://example.com/mobile-apps",
+  },
+  "Web Apps": {
+    title: "Project Management Tool",
+    duration: "1 Month",
+    type: "Client",
+    description: "Task boards, timelines, and collaboration features for distributed teams.",
+    liveUrl: "https://example.com/web-apps",
+  },
+  "Design Systems": {
+    title: "Component Design System",
+    duration: "2 Months",
+    type: "Client",
+    description: "Reusable UI components, tokens, and documentation for consistent product design.",
+    liveUrl: "https://example.com/design-systems",
+  },
+  Wireframes: {
+    title: "Banking App Wireframes",
+    duration: "2 Weeks",
+    type: "Project",
+    description: "Low-fidelity wireframes exploring user flows for transfers, statements, and card management.",
+    liveUrl: "https://example.com/wireframes",
+  },
+  Prototypes: {
+    title: "Travel App Prototype",
+    duration: "3 Weeks",
+    type: "Self",
+    description: "Interactive prototype validating booking flows and destination discovery interactions.",
+    liveUrl: "https://example.com/prototypes",
+  },
+};
+
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -140,6 +263,8 @@ export default function ProjectsFileManager({
     onFolderClick(name);
   };
 
+  const selectedDetail = selectedFolder ? folderDetails[selectedFolder] : null;
+
   return (
     <div className="flex h-full">
       <div className="w-52 bg-[#0f1924] border-r border-gray-700 overflow-y-auto p-1.5 shrink-0">
@@ -185,60 +310,62 @@ export default function ProjectsFileManager({
               className="flex-1 bg-transparent border-none outline-none text-sm text-gray-200 placeholder:text-gray-500"
             />
           </div>
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            className="w-7 h-7 flex items-center justify-center border border-gray-600 hover:text-gray-200 transition-colors"
-            style={{ borderRadius: 0 }}
-            title="New"
-          >
-            <Plus className="w-3.5 h-3.5 text-gray-400" />
-          </motion.button>
-          <div className="relative">
+          <div className="ml-auto flex items-center gap-2">
             <motion.button
-              onClick={() => setSortOpen((v) => !v)}
-              className="h-7 px-2 flex items-center justify-center gap-1 border border-gray-600 hover:text-gray-200 transition-colors"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              className="w-7 h-7 flex items-center justify-center border border-gray-600 hover:text-gray-200 transition-colors"
               style={{ borderRadius: 0 }}
-              title="Sort by"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              title="New"
             >
-              <span className="text-xs text-gray-400">Sort by</span>
-              <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
+              <Plus className="w-3.5 h-3.5 text-gray-400" />
             </motion.button>
-            {sortOpen && (
-              <motion.div
-                initial={{ opacity: 0, y: -4 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -4 }}
-                className="absolute right-0 top-full mt-1 w-40 bg-[#1a2332] border border-gray-700 shadow-lg z-50"
+            <div className="relative">
+              <motion.button
+                onClick={() => setSortOpen((v) => !v)}
+                className="h-7 px-2 flex items-center justify-center gap-1 border border-gray-600 hover:text-gray-200 transition-colors"
                 style={{ borderRadius: 0 }}
+                title="Sort by"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
               >
-                {["Name", "Date modified", "Size", "Type"].map((item) => (
-                  <motion.button
-                    key={item}
-                    className="w-full text-left px-3 py-1.5 text-xs text-gray-300 hover:bg-[#0f1924] transition-colors"
-                    whileHover={{ x: 4 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  >
-                    {item}
-                  </motion.button>
-                ))}
-              </motion.div>
-            )}
+                <span className="text-xs text-gray-400">Sort by</span>
+                <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
+              </motion.button>
+              {sortOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  className="absolute right-0 top-full mt-1 w-40 bg-[#1a2332] border border-gray-700 shadow-lg z-50"
+                  style={{ borderRadius: 0 }}
+                >
+                  {["Name", "Date modified", "Size", "Type"].map((item) => (
+                    <motion.button
+                      key={item}
+                      className="w-full text-left px-3 py-1.5 text-xs text-gray-300 hover:bg-[#0f1924] transition-colors"
+                      whileHover={{ x: 4 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                    >
+                      {item}
+                    </motion.button>
+                  ))}
+                </motion.div>
+              )}
+            </div>
+            <motion.button
+              onClick={() => setShowDetails((v) => !v)}
+              className={`w-7 h-7 flex items-center justify-center border transition-colors ${
+                showDetails ? "accent-border bg-[#151F27] accent-text" : "border-gray-600 text-gray-400 hover:text-gray-200"
+              }`}
+              style={{ borderRadius: 0 }}
+              title="Details pane"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              <LayoutList className="w-3.5 h-3.5" />
+            </motion.button>
           </div>
-          <motion.button
-            onClick={() => setShowDetails((v) => !v)}
-            className={`w-7 h-7 flex items-center justify-center border transition-colors ${
-              showDetails ? "accent-border bg-[#151F27] accent-text" : "border-gray-600 text-gray-400 hover:text-gray-200"
-            }`}
-            style={{ borderRadius: 0 }}
-            title="Details pane"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            <LayoutList className="w-3.5 h-3.5" />
-          </motion.button>
         </div>
 
         <div className="flex flex-1 min-h-0">
@@ -351,37 +478,48 @@ export default function ProjectsFileManager({
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.1 }}
                 >
-                  {!openedFolder ? (
+                  {!selectedFolder ? (
                     <div className="text-xs text-gray-500 px-1">Select a folder to view details.</div>
-                  ) : (
+                  ) : selectedDetail ? (
                     <motion.div
-                      className="space-y-1"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
+                      className="space-y-3"
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.1 }}
                     >
-                      <motion.div
-                        className="text-xs font-semibold text-gray-400 px-1 py-1 border-b border-gray-700 mb-2"
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.15 }}
-                      >
-                        {openedFolder}
-                      </motion.div>
-                      {detailItems.map((item, idx) => (
-                        <motion.div
-                          key={idx}
-                          className="grid grid-cols-[1fr_80px_60px] gap-2 px-1 py-1.5 text-xs border-b border-gray-700/60 last:border-b-0"
-                          initial={{ opacity: 0, x: -10 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: 0.15 + idx * 0.03 }}
+                      <div>
+                        <div className="text-xs font-semibold text-gray-400 mb-1">Title</div>
+                        <div className="text-xs text-gray-200">{selectedDetail.title}</div>
+                      </div>
+                      <div>
+                        <div className="text-xs font-semibold text-gray-400 mb-1">Duration</div>
+                        <div className="text-xs text-gray-200">{selectedDetail.duration}</div>
+                      </div>
+                      <div>
+                        <div className="text-xs font-semibold text-gray-400 mb-1">Type</div>
+                        <div className="text-xs text-gray-200">{selectedDetail.type}</div>
+                      </div>
+                      <div>
+                        <div className="text-xs font-semibold text-gray-400 mb-1">Description</div>
+                        <div className="text-xs text-gray-300 leading-relaxed">{selectedDetail.description}</div>
+                      </div>
+                      {selectedDetail.liveUrl && (
+                        <a
+                          href={selectedDetail.liveUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 border text-xs text-gray-200 transition-colors"
+                          style={{ borderRadius: 0, borderColor: "var(--accent-border)", backgroundColor: "transparent" }}
+                          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "var(--accent-dim)"; }}
+                          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; }}
                         >
-                          <span className="text-gray-200 truncate">{item.name}</span>
-                          <span className="text-gray-500 truncate">{item.dateModified}</span>
-                          <span className="text-gray-500 truncate text-right">{item.size}</span>
-                        </motion.div>
-                      ))}
+                          <ExternalLink className="w-3.5 h-3.5" />
+                          <span>Live</span>
+                        </a>
+                      )}
                     </motion.div>
+                  ) : (
+                    <div className="text-xs text-gray-500 px-1">No details available.</div>
                   )}
                 </motion.div>
               </motion.div>

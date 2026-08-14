@@ -89,15 +89,6 @@ export default function PersonalizationWindow({
     setSelectedAccent(color);
   };
 
-  useEffect(() => {
-    const saved = localStorage.getItem("accent-color");
-    if (saved) {
-      document.documentElement.style.setProperty("--accent", saved);
-      document.documentElement.style.setProperty("--accent-dim", `${saved}1a`);
-      document.documentElement.style.setProperty("--accent-border", `${saved}4d`);
-    }
-  }, []);
-
   const handleMouseDown = (e: React.MouseEvent) => {
     if ((e.target as HTMLElement).closest(".window-controls")) return;
     if ((e.target as HTMLElement).closest("input")) return;
