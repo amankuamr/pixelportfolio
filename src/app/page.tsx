@@ -15,8 +15,8 @@ import DesktopIconContextMenu from "@/components/context menu/DesktopIconContext
 import DeleteConfirmationPopup from "@/components/popups/DeleteConfirmationPopup";
 import OperaAbout from "@/components/windows/OperaAbout";
 import PersonalizationWindow from "@/components/windows/PersonalizationWindow";
+import ProjectsFileManager from "@/components/windows/ProjectsFileManager";
 import { SkillsImageIcon, AboutMeImageIcon, ProjectsImageIcon, ContactImageIcon, ResumeImageIcon } from "@/components/WindowsIcons";
-import { ChevronLeft, ChevronRight, ChevronUp, Search } from "lucide-react";
 
 export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -30,6 +30,7 @@ export default function Home() {
   const [renamingId, setRenamingId] = useState<string | null>(null);
   const [renameValue, setRenameValue] = useState("");
   const [deleteConfirm, setDeleteConfirm] = useState<{ id: string; x: number; y: number } | null>(null);
+  const [projectsState, setProjectsState] = useState<Record<string, { selectedCategory: string; openedFolder: string | null; path: string }>>({});
 
   interface DesktopIconData {
     id: string;
@@ -227,6 +228,18 @@ export default function Home() {
     setContextMenu(null);
   };
 
+  const [selectedBackground, setSelectedBackground] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("selected-background") || "/wallpaper/wallpaper2.mp4";
+    }
+      return "/wallpaper/wallpaper1.mp4";
+  });
+
+  const handleBackgroundSelect = (src: string) => {
+    setSelectedBackground(src);
+    localStorage.setItem("selected-background", src);
+  };
+
   const [iconPositions, setIconPositions] = useState<{ [key: string]: { x: number; y: number } }>({
     about: { x: 20, y: 20 },
     projects: { x: 20, y: 120 },
@@ -302,7 +315,7 @@ export default function Home() {
 
   return (
     <div className="relative w-full h-screen overflow-hidden">
-      <Background />
+      <Background key={selectedBackground} src={selectedBackground} />
 
       <div className="relative z-10 w-full h-full pb-12" onContextMenu={handleContextMenu}>
         <div className="relative w-full h-full">
@@ -397,11 +410,7 @@ export default function Home() {
               { label: "Desktop", icon: <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="currentColor" strokeWidth="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2" /><line x1="8" y1="21" x2="16" y2="21" /><line x1="12" y1="17" x2="12" y2="21" /></svg> },
               { label: "Downloads", icon: <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg> },
             ],
-            projects: [
-              { label: "Home", icon: <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="currentColor" strokeWidth="2"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg> },
-              { label: "Projects", icon: <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="currentColor" strokeWidth="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z" /></svg>, active: true },
-              { label: "Recent", icon: <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg> },
-            ],
+            projects: [],
             skills: [
               { label: "Home", icon: <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="currentColor" strokeWidth="2"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg> },
               { label: "Skills", icon: <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="currentColor" strokeWidth="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>, active: true },
@@ -421,7 +430,7 @@ export default function Home() {
 
           const contentMap: Record<string, React.ReactNode> = {
             about: (
-              <div className="space-y-4">
+              <div className="p-4 space-y-4">
                 <h2 className="text-2xl font-bold accent-text">Hello, I&apos;m a Designer</h2>
                 <p className="text-gray-300 font-light">
                   I create beautiful and functional user experiences. Welcome to my portfolio!
@@ -429,25 +438,41 @@ export default function Home() {
               </div>
             ),
             projects: (
-              <div className="space-y-4">
-                <h2 className="text-2xl font-bold accent-text">My Projects</h2>
-                <p className="text-gray-300 font-light">Check out my latest work here.</p>
-              </div>
+              <ProjectsFileManager
+                selectedCategory={projectsState[win.id]?.selectedCategory || "Graphics Design"}
+                openedFolder={projectsState[win.id]?.openedFolder || null}
+                onCategoryClick={(name) =>
+                  setProjectsState((prev) => ({
+                    ...prev,
+                    [win.id]: { selectedCategory: name, openedFolder: null, path: `Projects > ${name}` },
+                  }))
+                }
+                onFolderClick={(folderName) =>
+                  setProjectsState((prev) => ({
+                    ...prev,
+                    [win.id]: {
+                      ...prev[win.id],
+                      openedFolder: folderName,
+                      path: `Projects > ${prev[win.id]?.selectedCategory || "Graphics Design"} > ${folderName}`,
+                    },
+                  }))
+                }
+              />
             ),
             skills: (
-              <div className="space-y-4">
+              <div className="p-4 space-y-4">
                 <h2 className="text-2xl font-bold accent-text">Skills</h2>
                 <p className="text-gray-300 font-light">My technical and design skills.</p>
               </div>
             ),
             contact: (
-              <div className="space-y-4">
+              <div className="p-4 space-y-4">
                 <h2 className="text-2xl font-bold accent-text">Contact</h2>
                 <p className="text-gray-300 font-light">Get in touch with me.</p>
               </div>
             ),
             resume: (
-              <div className="space-y-4">
+              <div className="p-4 space-y-4">
                 <h2 className="text-2xl font-bold accent-text">Resume</h2>
                 <p className="text-gray-300 font-light">My resume and work experience.</p>
               </div>
@@ -486,6 +511,8 @@ export default function Home() {
                 isMinimized={win.isMinimized}
                 zIndex={activeWindow === win.id ? 100 : 10}
                 onFocus={() => handleWindowFocus(win.id)}
+                selectedBackground={selectedBackground}
+                onBackgroundSelect={handleBackgroundSelect}
               />
             );
           }
@@ -503,6 +530,10 @@ export default function Home() {
               zIndex={activeWindow === win.id ? 100 : 10}
               onFocus={() => handleWindowFocus(win.id)}
               sidebarItems={sidebarItemsMap[win.type] || []}
+              addressPath={win.type === "projects" ? (projectsState[win.id]?.path || "Projects") : undefined}
+              onBack={win.type === "projects" ? () => setProjectsState((prev) => ({ ...prev, [win.id]: { ...prev[win.id], openedFolder: null, path: `Projects > ${prev[win.id]?.selectedCategory || "Graphics Design"}` } })) : undefined}
+              onForward={undefined}
+              onUp={win.type === "projects" ? () => setProjectsState((prev) => ({ ...prev, [win.id]: { ...prev[win.id], openedFolder: null, path: `Projects > ${prev[win.id]?.selectedCategory || "Graphics Design"}` } })) : undefined}
             >
               {contentMap[win.type] || null}
             </FileManagerWindow>

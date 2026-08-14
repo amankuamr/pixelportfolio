@@ -2,18 +2,35 @@
 
 import { motion } from "framer-motion";
 
-export default function Background() {
+interface BackgroundProps {
+  src: string;
+}
+
+export default function Background({ src }: BackgroundProps) {
+  const isVideo = src.endsWith(".mp4");
+
   return (
     <div className="fixed inset-0 z-0">
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
-        className="absolute inset-0 w-full h-full object-cover"
-      >
-        <source src="/wallpaper/wallpaper2.mp4" type="video/mp4" />
-      </video>
+      {isVideo ? (
+        <video
+          key={src}
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+        >
+          <source src={src} type="video/mp4" suppressHydrationWarning />
+        </video>
+      ) : (
+        <img
+          key={src}
+          src={src}
+          alt="Background"
+          className="absolute inset-0 w-full h-full object-cover"
+          suppressHydrationWarning
+        />
+      )}
 
       <motion.div
         initial={{ opacity: 0 }}

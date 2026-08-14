@@ -332,8 +332,8 @@ export default function OperaAbout({
           {tabs.map((tab) => (
             <div
               key={tab.id}
-              className={`group flex items-center gap-2 px-3 py-1.5 border transition-colors cursor-pointer ${activeTab === tab.id ? "accent-border-30 accent-bg-dim" : "border-transparent hover:border-gray-600 hover:bg-gray-700/20"}`}
-              style={{ borderRadius: 0 }}
+              className={`group flex items-center gap-2 px-3 py-1.5 border transition-colors cursor-pointer ${activeTab === tab.id ? "accent-bg-dim" : "border-transparent hover:border-gray-600 hover:bg-gray-700/20"}`}
+              style={{ borderRadius: 0, borderColor: activeTab === tab.id ? "var(--accent-border)" : undefined }}
               onClick={() => setActiveTab(tab.id)}
             >
               {tab.icon && <span className="text-gray-400">{tab.icon}</span>}

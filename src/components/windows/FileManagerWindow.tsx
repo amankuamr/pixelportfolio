@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, ChevronUp, Search } from "lucide-react";
 
@@ -24,6 +24,11 @@ interface FileManagerWindowProps {
   isMinimized?: boolean;
   zIndex?: number;
   onFocus?: () => void;
+  addressPath?: string;
+  onAddressChange?: (path: string) => void;
+  onBack?: () => void;
+  onForward?: () => void;
+  onUp?: () => void;
 }
 
 export default function FileManagerWindow({
@@ -38,12 +43,15 @@ export default function FileManagerWindow({
   isMinimized = false,
   zIndex = 10,
   onFocus,
+  addressPath = "",
+  onAddressChange,
+  onBack,
+  onForward,
+  onUp,
 }: FileManagerWindowProps) {
-  const [position, setPosition] = useState(initialPosition);
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
-  const [searchFocused, setSearchFocused] = useState(false);
-  const windowRef = useRef<HTMLDivElement>(null);
+   const [position, setPosition] = useState(initialPosition);
+   const [isDragging, setIsDragging] = useState(false);
+   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if ((e.target as HTMLElement).closest(".window-controls")) return;
@@ -101,7 +109,8 @@ export default function FileManagerWindow({
       }}
     >
       <div
-        className="h-10 bg-[#1a2332] border-b accent-border-30 flex items-center px-3 gap-2 cursor-move select-none"
+        className="h-10 bg-[#1a2332] flex items-center px-3 gap-2 cursor-move select-none"
+        style={{ borderBottom: `1px solid var(--accent-border)` }}
         onMouseDown={handleMouseDown}
       >
         <div className="w-5 h-5 flex items-center justify-center text-gray-400">
@@ -137,54 +146,94 @@ export default function FileManagerWindow({
 
       <div className="h-10 bg-[#1a2332] border-b border-gray-700 flex items-center px-2 gap-1">
         <div className="flex items-center gap-0.5">
-          <button className="w-7 h-7 flex items-center justify-center hover-accent-bg transition-colors">
-            <ChevronLeft className="w-4 h-4 text-gray-300" />
+          <button
+            onClick={onBack}
+            className="w-7 h-7 flex items-center justify-center transition-colors"
+            style={{ backgroundColor: "var(--accent-dim)", color: "var(--accent)", border: "1px solid transparent" }}
+            onMouseEnter={(e) => { e.currentTarget.style.borderColor = "var(--accent)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.borderColor = "transparent"; }}
+          >
+            <ChevronLeft className="w-4 h-4" />
           </button>
-          <button className="w-7 h-7 flex items-center justify-center hover-accent-bg transition-colors">
-            <ChevronRight className="w-4 h-4 text-gray-300" />
+          <button
+            onClick={onForward}
+            className="w-7 h-7 flex items-center justify-center transition-colors"
+            style={{ backgroundColor: "var(--accent-dim)", color: "var(--accent)", border: "1px solid transparent" }}
+            onMouseEnter={(e) => { e.currentTarget.style.borderColor = "var(--accent)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.borderColor = "transparent"; }}
+          >
+            <ChevronRight className="w-4 h-4" />
           </button>
-          <button className="w-7 h-7 flex items-center justify-center hover-accent-bg transition-colors">
-            <ChevronUp className="w-4 h-4 text-gray-300" />
+          <button
+            onClick={onUp}
+            className="w-7 h-7 flex items-center justify-center transition-colors"
+            style={{ backgroundColor: "var(--accent-dim)", color: "var(--accent)", border: "1px solid transparent" }}
+            onMouseEnter={(e) => { e.currentTarget.style.borderColor = "var(--accent)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.borderColor = "transparent"; }}
+          >
+            <ChevronUp className="w-4 h-4" />
           </button>
         </div>
-        <div className="flex-1 max-w-xl">
-          <div className={`flex items-center gap-2 px-3 py-1 border transition-colors ${searchFocused ? "accent-border bg-[#151F27]" : "border-gray-600 bg-[#0f1924]"
-            }`}>
-            <Search className="w-4 h-4 text-gray-400 shrink-0" />
-            <input
-              type="text"
-              placeholder="Search"
-              className="flex-1 bg-transparent border-none outline-none text-sm text-gray-200 placeholder:text-gray-500"
-              onFocus={() => setSearchFocused(true)}
-              onBlur={() => setSearchFocused(false)}
-            />
-          </div>
+
+        <div className="flex-1 flex items-center gap-2 px-2 py-1 border border-gray-600 bg-[#0f1924] ml-1">
+          <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4 text-gray-400 shrink-0">
+            <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z" stroke="currentColor" strokeWidth="2" />
+          </svg>
+          <input
+            type="text"
+            value={addressPath}
+            onChange={(e) => onAddressChange?.(e.target.value)}
+            className="flex-1 bg-transparent border-none outline-none text-sm text-gray-200 min-w-0"
+          />
+        </div>
+
+        <div className="flex items-center gap-2 px-2 py-1 border border-gray-600 bg-[#0f1924] w-36 shrink-0">
+          <Search className="w-3.5 h-3.5 text-gray-400 shrink-0" />
+          <input
+            type="text"
+            placeholder="Search"
+            className="flex-1 bg-transparent border-none outline-none text-sm text-gray-200 placeholder:text-gray-500"
+          />
         </div>
       </div>
 
       <div className="flex h-[calc(100%-84px)]">
         {sidebarItems.length > 0 && (
-          <div className="w-44 bg-[#0f1924] border-r border-gray-700 overflow-y-auto p-1.5 shrink-0">
-            {sidebarItems.map((item, index) => (
-              <button
-                key={index}
-                onClick={item.onClick}
-                className={`w-full flex items-center gap-2.5 px-2.5 py-2 mb-0.5 transition-colors text-left ${item.active
-                    ? "accent-bg accent-text"
-                    : "hover-accent-bg text-gray-300"
-                  }`}
-              >
-                <div className={`w-5 h-5 flex items-center justify-center shrink-0 ${item.active ? "accent-text" : "text-gray-400"}`}>
-                  {item.icon}
-                </div>
-                <span className="text-sm truncate">{item.label}</span>
-              </button>
-            ))}
+          <div className="w-52 bg-[#0f1924] border-r border-gray-700 overflow-y-auto p-1.5 shrink-0">
+            {sidebarItems.map((item, index) => {
+              const isActive = item.active;
+              return (
+                <button
+                  key={index}
+                  onClick={item.onClick}
+                  className="w-full flex items-center gap-2.5 px-2.5 py-2 mb-0.5 transition-colors text-left"
+                  style={{
+                    backgroundColor: isActive ? "var(--accent-dim)" : "transparent",
+                    color: isActive ? "var(--accent)" : "#d1d5db",
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.backgroundColor = "var(--accent-dim)";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.backgroundColor = "transparent";
+                    }
+                  }}
+                >
+                  <div className="w-5 h-5 flex items-center justify-center shrink-0" style={{ color: isActive ? "var(--accent)" : "#9ca3af" }}>
+                    {item.icon}
+                  </div>
+                  <span className="text-sm truncate">{item.label}</span>
+                </button>
+              );
+            })}
           </div>
         )}
 
         <div className="flex-1 flex flex-col min-w-0 bg-[#151F27]">
-          <div className="flex-1 overflow-auto p-4">{children}</div>
+          <div className="flex-1 overflow-auto">{children}</div>
         </div>
       </div>
     </motion.div>

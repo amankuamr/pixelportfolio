@@ -12,6 +12,8 @@ interface PersonalizationWindowProps {
   isMinimized?: boolean;
   zIndex?: number;
   onFocus?: () => void;
+  selectedBackground?: string;
+  onBackgroundSelect?: (src: string) => void;
 }
 
 interface SidebarItem {
@@ -31,12 +33,12 @@ const sidebarItems: SidebarItem[] = [
   { label: "Fonts", icon: <Type className="w-4 h-4" /> },
 ];
 
-const wallpaperOptions = [
-  { id: "default", name: "Windows Spotlight", color: "#0078d4" },
-  { id: "solid", name: "Solid color", color: "#151F27" },
-  { id: "slideshow", name: "Slideshow", color: "#1a2332" },
-  { id: "custom", name: "Custom picture", color: "#2a3a4a" },
+const liveWallpapers = [
+  { id: "wallpaper1", name: "Live Photo 1", src: "/wallpaper/wallpaper1.mp4", color: "#1a2332" },
+  { id: "wallpaper2", name: "Live Photo 2", src: "/wallpaper/wallpaper2.mp4", color: "#1a2332" },
 ];
+
+const staticWallpapers: Array<{ id: string; name: string; src: string; color: string }> = [];
 
 const themeOptions = [
   { id: "light", name: "Light", color: "#ffffff" },
@@ -63,13 +65,14 @@ export default function PersonalizationWindow({
   isMinimized = false,
   zIndex = 10,
   onFocus,
+  selectedBackground,
+  onBackgroundSelect,
 }: PersonalizationWindowProps) {
   const [position, setPosition] = useState(initialPosition);
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [searchFocused, setSearchFocused] = useState(false);
   const [activeSection, setActiveSection] = useState("Background");
-  const [selectedWallpaper, setSelectedWallpaper] = useState("default");
   const [selectedTheme, setSelectedTheme] = useState("dark");
   const [selectedAccent, setSelectedAccent] = useState(() => {
     if (typeof window !== "undefined") {
@@ -255,39 +258,82 @@ export default function PersonalizationWindow({
         <div className="flex-1 flex flex-col min-w-0 bg-[#151F27]">
           <div className="flex-1 overflow-auto p-6">
              {activeSection === "Background" && (
-               <div className="space-y-6">
-                 <h2 className="text-xl font-bold" style={{ color: "var(--accent)" }}>Background</h2>
-                 <p className="text-sm text-gray-400">Background image, color, slideshow</p>
+                <div className="space-y-6">
+                  <h2 className="text-xl font-bold" style={{ color: "var(--accent)" }}>Background</h2>
+                  <p className="text-sm text-gray-400">Background image, color, slideshow</p>
 
-                 <div className="grid grid-cols-2 gap-4 mt-6">
-                   {wallpaperOptions.map((option) => (
-                     <button
-                       key={option.id}
-                       onClick={() => setSelectedWallpaper(option.id)}
-                       className="border p-4 transition-colors text-left"
-                       style={{
-                         borderRadius: 0,
-                         borderColor: selectedWallpaper === option.id ? "var(--accent)" : "#374151",
-                         backgroundColor: selectedWallpaper === option.id ? "var(--accent-dim)" : option.color,
-                       }}
-                     >
-                       <div className="flex items-center gap-3">
-                         <div
-                           className="w-12 h-12 border border-gray-600"
-                           style={{ borderRadius: 0, backgroundColor: option.color }}
-                         />
-                         <div>
-                           <p className="text-sm font-semibold text-gray-200">{option.name}</p>
-                           {selectedWallpaper === option.id && (
-                             <p className="text-xs mt-1" style={{ color: "var(--accent)" }}>Selected</p>
-                           )}
-                         </div>
-                       </div>
-                     </button>
-                   ))}
-                 </div>
-               </div>
-             )}
+                  <div>
+                    <h3 className="text-sm font-semibold text-gray-300 mb-3">Live wallpapers</h3>
+                    <div className="grid grid-cols-2 gap-4">
+                      {liveWallpapers.map((option) => (
+                        <button
+                          key={option.id}
+                          onClick={() => onBackgroundSelect?.(option.src)}
+                          className="border p-4 transition-colors text-left"
+                          style={{
+                            borderRadius: 0,
+                            borderColor: selectedBackground === option.src ? "var(--accent)" : "#374151",
+                            backgroundColor: selectedBackground === option.src ? "var(--accent-dim)" : option.color,
+                          }}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div
+                              className="w-12 h-12 border border-gray-600 flex items-center justify-center"
+                              style={{ borderRadius: 0, backgroundColor: option.color }}
+                            >
+                              <span className="text-[10px] font-bold text-gray-400 tracking-wider">LIVE</span>
+                            </div>
+                            <div>
+                              <p className="text-sm font-semibold text-gray-200">{option.name}</p>
+                              {selectedBackground === option.src && (
+                                <p className="text-xs mt-1" style={{ color: "var(--accent)" }}>Selected</p>
+                              )}
+                            </div>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 className="text-sm font-semibold text-gray-300 mb-3">Static wallpapers</h3>
+                    {staticWallpapers.length === 0 ? (
+                      <div className="border border-gray-700 p-4 text-center" style={{ borderRadius: 0, backgroundColor: "#1a2332" }}>
+                        <p className="text-sm text-gray-400">No static wallpapers yet</p>
+                        <p className="text-xs text-gray-500 mt-1">Add images to public/wallpaper/ to see them here</p>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-2 gap-4">
+                        {staticWallpapers.map((option) => (
+                          <button
+                            key={option.id}
+                            onClick={() => onBackgroundSelect?.(option.src)}
+                            className="border p-4 transition-colors text-left"
+                            style={{
+                              borderRadius: 0,
+                              borderColor: selectedBackground === option.src ? "var(--accent)" : "#374151",
+                              backgroundColor: selectedBackground === option.src ? "var(--accent-dim)" : option.color,
+                            }}
+                          >
+                            <div className="flex items-center gap-3">
+                              <div
+                                className="w-12 h-12 border border-gray-600"
+                                style={{ borderRadius: 0, backgroundColor: option.color }}
+                              />
+                              <div>
+                                <p className="text-sm font-semibold text-gray-200">{option.name}</p>
+                                {selectedBackground === option.src && (
+                                  <p className="text-xs mt-1" style={{ color: "var(--accent)" }}>Selected</p>
+                                )}
+                              </div>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
 
              {activeSection === "Colors" && (
                <div className="space-y-6">
