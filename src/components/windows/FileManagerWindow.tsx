@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, ChevronUp, Search } from "lucide-react";
 
@@ -55,38 +55,58 @@ export default function FileManagerWindow({
   onUp,
   showSearchBar = true,
 }: FileManagerWindowProps) {
-   const [position, setPosition] = useState(initialPosition);
-   const [size, setSize] = useState(initialSize);
-   const [isDragging, setIsDragging] = useState(false);
-   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [position, setPosition] = useState(initialPosition);
+  const [size, setSize] = useState(initialSize);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [isClosing, setIsClosing] = useState(false);
 
-   const toggleMaximize = () => {
-     if (isMaximized) {
-       setPosition(initialPosition);
-       setSize(initialSize);
-       onMaximize?.();
-     } else {
-       setPosition({ x: 0, y: 0 });
-       setSize({ width: window.innerWidth, height: window.innerHeight });
-       onMaximize?.();
-     }
-   };
+  const initialPositionRef = useRef(initialPosition);
+  const initialSizeRef = useRef(initialSize);
 
-   const handleMouseDown = (e: React.MouseEvent) => {
-     if ((e.target as HTMLElement).closest(".window-controls")) return;
-     if ((e.target as HTMLElement).closest("input")) return;
-     if (isMaximized) return;
-     onFocus?.();
-     setIsDragging(true);
-     setDragOffset({
-       x: e.clientX - position.x,
-       y: e.clientY - position.y,
-     });
-   };
+  useEffect(() => {
+    if (isMaximized) {
+      setPosition({ x: 0, y: 0 });
+      setSize({ width: window.innerWidth, height: window.innerHeight });
+    } else {
+      setPosition(initialPositionRef.current);
+      setSize(initialSizeRef.current);
+    }
+  }, [isMaximized]);
+
+  const toggleMaximize = useCallback(() => {
+    onMaximize?.();
+  }, [onMaximize]);
+
+  const handleClose = useCallback(() => {
+    setIsClosing(true);
+  }, []);
+
+  const handleMinimize = useCallback(() => {
+    onMinimize?.();
+  }, [onMinimize]);
+
+  const handleAnimationComplete = useCallback(() => {
+    if (isClosing && onClose) {
+      onClose();
+    }
+  }, [isClosing, onClose]);
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if ((e.target as HTMLElement).closest(".window-controls")) return;
+    if ((e.target as HTMLElement).closest("input")) return;
+    if (isMaximized || isClosing) return;
+    onFocus?.();
+    setIsDragging(true);
+    setDragOffset({
+      x: e.clientX - position.x,
+      y: e.clientY - position.y,
+    });
+  };
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      if (isDragging) {
+      if (isDragging && !isClosing) {
         setPosition({
           x: e.clientX - dragOffset.x,
           y: e.clientY - dragOffset.y,
@@ -98,7 +118,7 @@ export default function FileManagerWindow({
       setIsDragging(false);
     };
 
-    if (isDragging) {
+    if (isDragging && !isClosing) {
       document.addEventListener("mousemove", handleMouseMove);
       document.addEventListener("mouseup", handleMouseUp);
     }
@@ -107,26 +127,29 @@ export default function FileManagerWindow({
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [isDragging, dragOffset]);
+  }, [isDragging, dragOffset, isClosing]);
+
+  const isHidden = isMinimized || isClosing;
 
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
-      animate={
-        isMinimized
-          ? { opacity: 0, scale: 0.95, pointerEvents: "none" }
-          : { opacity: 1, scale: 1, pointerEvents: "auto" }
-      }
-      transition={{ type: "spring", stiffness: 300, damping: 25 }}
-      className="absolute bg-[#151F27] border border-gray-700 overflow-hidden"
-      style={{
+      animate={{
         left: position.x,
         top: position.y,
         width: size.width,
         height: size.height,
+        opacity: isHidden ? 0 : 1,
+        scale: isClosing ? 0.95 : 1,
+      }}
+      exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.15 } }}
+      transition={{ type: "spring", stiffness: 300, damping: 25 }}
+      className="absolute bg-[#151F27] border border-gray-700 overflow-hidden"
+      style={{
         zIndex,
         borderRadius: 0,
       }}
+      onAnimationComplete={handleAnimationComplete}
     >
       <div
         className="h-10 bg-[#1a2332] flex items-center px-3 gap-2 cursor-move select-none"
@@ -162,7 +185,7 @@ export default function FileManagerWindow({
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
-            onClick={onMinimize}
+            onClick={handleMinimize}
             className="w-5 h-5 flex items-center justify-center border border-green-400/60"
             style={{ borderRadius: 0, backgroundColor: "rgba(34,197,94,0.15)" }}
           >
@@ -173,7 +196,7 @@ export default function FileManagerWindow({
           <motion.button
             whileHover={{ scale: 1.1, backgroundColor: "#ef4444" }}
             whileTap={{ scale: 0.9 }}
-            onClick={onClose}
+            onClick={handleClose}
             className="w-5 h-5 flex items-center justify-center border border-red-400/60"
             style={{ borderRadius: 0, backgroundColor: "rgba(239,68,68,0.25)" }}
           >
