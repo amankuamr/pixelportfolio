@@ -31,6 +31,7 @@ interface FileManagerWindowProps {
   onBack?: () => void;
   onForward?: () => void;
   onUp?: () => void;
+  showSearchBar?: boolean;
 }
 
 export default function FileManagerWindow({
@@ -52,6 +53,7 @@ export default function FileManagerWindow({
   onBack,
   onForward,
   onUp,
+  showSearchBar = true,
 }: FileManagerWindowProps) {
    const [position, setPosition] = useState(initialPosition);
    const [size, setSize] = useState(initialSize);
@@ -226,14 +228,16 @@ export default function FileManagerWindow({
           />
         </div>
 
-        <div className="flex items-center gap-2 px-2 py-1 border border-gray-600 bg-[#0f1924] w-36 shrink-0">
-          <Search className="w-3.5 h-3.5 text-gray-400 shrink-0" />
-          <input
-            type="text"
-            placeholder="Search"
-            className="flex-1 bg-transparent border-none outline-none text-sm text-gray-200 placeholder:text-gray-500"
-          />
-        </div>
+        {showSearchBar && (
+          <div className="flex items-center gap-2 px-2 py-1 border border-gray-600 bg-[#0f1924] w-36 shrink-0">
+            <Search className="w-3.5 h-3.5 text-gray-400 shrink-0" />
+            <input
+              type="text"
+              placeholder="Search"
+              className="flex-1 bg-transparent border-none outline-none text-sm text-gray-200 placeholder:text-gray-500"
+            />
+          </div>
+        )}
       </div>
 
       <div className="flex h-[calc(100%-84px)]">

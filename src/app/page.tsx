@@ -545,6 +545,7 @@ export default function Home() {
               onBack={win.type === "projects" ? () => setProjectsState((prev) => ({ ...prev, [win.id]: { ...prev[win.id], openedFolder: null, path: `Projects > ${prev[win.id]?.selectedCategory || "Graphics Design"}` } })) : undefined}
               onForward={undefined}
               onUp={win.type === "projects" ? () => setProjectsState((prev) => ({ ...prev, [win.id]: { ...prev[win.id], openedFolder: null, path: `Projects > ${prev[win.id]?.selectedCategory || "Graphics Design"}` } })) : undefined}
+              showSearchBar={win.type !== "projects"}
             >
               {contentMap[win.type] || null}
             </FileManagerWindow>
