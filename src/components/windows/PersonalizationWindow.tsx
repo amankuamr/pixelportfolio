@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, ChevronUp, Search, ImageIcon, Palette, Brush, Lock, Keyboard, LayoutGrid, Monitor, Type } from "lucide-react";
 
@@ -44,6 +44,17 @@ const themeOptions = [
   { id: "custom", name: "Custom", color: "#1a2332" },
 ];
 
+const accentColors = [
+  { id: "#D9FF00", name: "Neon Lime" },
+  { id: "#00ff00", name: "Green" },
+  { id: "#00ffcc", name: "Cyan" },
+  { id: "#00ccff", name: "Blue" },
+  { id: "#ff00ff", name: "Magenta" },
+  { id: "#ff6600", name: "Orange" },
+  { id: "#ff0066", name: "Pink" },
+  { id: "#ffff00", name: "Yellow" },
+];
+
 export default function PersonalizationWindow({
   initialPosition = { x: 300, y: 150 },
   initialSize = { width: 850, height: 550 },
@@ -53,16 +64,72 @@ export default function PersonalizationWindow({
   zIndex = 10,
   onFocus,
 }: PersonalizationWindowProps) {
+  const [position, setPosition] = useState(initialPosition);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [searchFocused, setSearchFocused] = useState(false);
   const [activeSection, setActiveSection] = useState("Background");
   const [selectedWallpaper, setSelectedWallpaper] = useState("default");
   const [selectedTheme, setSelectedTheme] = useState("dark");
+  const [selectedAccent, setSelectedAccent] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("accent-color") || "#D9FF00";
+    }
+    return "#D9FF00";
+  });
+
+  const applyAccentColor = (color: string) => {
+    document.documentElement.style.setProperty("--accent", color);
+    document.documentElement.style.setProperty("--accent-dim", `${color}1a`);
+    document.documentElement.style.setProperty("--accent-border", `${color}4d`);
+    localStorage.setItem("accent-color", color);
+    setSelectedAccent(color);
+  };
+
+  useEffect(() => {
+    const saved = localStorage.getItem("accent-color");
+    if (saved) {
+      document.documentElement.style.setProperty("--accent", saved);
+      document.documentElement.style.setProperty("--accent-dim", `${saved}1a`);
+      document.documentElement.style.setProperty("--accent-border", `${saved}4d`);
+    }
+  }, []);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if ((e.target as HTMLElement).closest(".window-controls")) return;
     if ((e.target as HTMLElement).closest("input")) return;
     onFocus?.();
+    setIsDragging(true);
+    setDragOffset({
+      x: e.clientX - position.x,
+      y: e.clientY - position.y,
+    });
   };
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (isDragging) {
+        setPosition({
+          x: e.clientX - dragOffset.x,
+          y: e.clientY - dragOffset.y,
+        });
+      }
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+    };
+
+    if (isDragging) {
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
+    }
+
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [isDragging, dragOffset]);
 
   const handleSectionClick = (label: string) => {
     setActiveSection(label);
@@ -79,8 +146,8 @@ export default function PersonalizationWindow({
       transition={{ type: "spring", stiffness: 300, damping: 25 }}
       className="absolute bg-[#151F27] border border-gray-700 overflow-hidden"
       style={{
-        left: initialPosition.x,
-        top: initialPosition.y,
+        left: position.x,
+        top: position.y,
         width: initialSize.width,
         height: initialSize.height,
         zIndex,
@@ -88,7 +155,8 @@ export default function PersonalizationWindow({
       }}
     >
       <div
-        className="h-10 bg-[#1a2332] border-b border-[#D9FF00]/30 flex items-center px-3 gap-2 cursor-move select-none"
+        className="h-10 bg-[#1a2332] flex items-center px-3 gap-2 cursor-move select-none"
+        style={{ borderBottom: `1px solid var(--accent-border)` }}
         onMouseDown={handleMouseDown}
       >
         <div className="w-5 h-5 flex items-center justify-center text-gray-400">
@@ -124,18 +192,24 @@ export default function PersonalizationWindow({
 
       <div className="h-10 bg-[#1a2332] border-b border-gray-700 flex items-center px-2 gap-1">
         <div className="flex items-center gap-0.5">
-          <button className="w-7 h-7 flex items-center justify-center hover:bg-[#D9FF00]/10 transition-colors">
-            <ChevronLeft className="w-4 h-4 text-gray-300" />
+          <button className="w-7 h-7 flex items-center justify-center transition-colors" style={{ backgroundColor: "var(--accent-dim)" }}>
+            <ChevronLeft className="w-4 h-4" style={{ color: "var(--accent)" }} />
           </button>
-          <button className="w-7 h-7 flex items-center justify-center hover:bg-[#D9FF00]/10 transition-colors">
-            <ChevronRight className="w-4 h-4 text-gray-300" />
+          <button className="w-7 h-7 flex items-center justify-center transition-colors" style={{ backgroundColor: "var(--accent-dim)" }}>
+            <ChevronRight className="w-4 h-4" style={{ color: "var(--accent)" }} />
           </button>
-          <button className="w-7 h-7 flex items-center justify-center hover:bg-[#D9FF00]/10 transition-colors">
-            <ChevronUp className="w-4 h-4 text-gray-300" />
+          <button className="w-7 h-7 flex items-center justify-center transition-colors" style={{ backgroundColor: "var(--accent-dim)" }}>
+            <ChevronUp className="w-4 h-4" style={{ color: "var(--accent)" }} />
           </button>
         </div>
         <div className="flex-1 max-w-xl">
-          <div className={`flex items-center gap-2 px-3 py-1 border transition-colors ${searchFocused ? "border-[#D9FF00] bg-[#151F27]" : "border-gray-600 bg-[#0f1924]"}`}>
+          <div
+            className="flex items-center gap-2 px-3 py-1 border transition-colors"
+            style={{
+              borderColor: searchFocused ? "var(--accent)" : "#4b5563",
+              backgroundColor: searchFocused ? "#151F27" : "#0f1924",
+            }}
+          >
             <Search className="w-4 h-4 text-gray-400 shrink-0" />
             <input
               type="text"
@@ -154,12 +228,23 @@ export default function PersonalizationWindow({
             <button
               key={index}
               onClick={() => handleSectionClick(item.label)}
-              className={`w-full flex items-center gap-2.5 px-2.5 py-2 mb-0.5 transition-colors text-left ${activeSection === item.label
-                  ? "bg-[#D9FF00]/15 text-[#D9FF00]"
-                  : "hover:bg-[#D9FF00]/10 text-gray-300"
-                }`}
+              className="w-full flex items-center gap-2.5 px-2.5 py-2 mb-0.5 transition-colors text-left"
+              style={{
+                backgroundColor: activeSection === item.label ? "var(--accent-dim)" : "transparent",
+                color: activeSection === item.label ? "var(--accent)" : "#d1d5db",
+              }}
+              onMouseEnter={(e) => {
+                if (activeSection !== item.label) {
+                  e.currentTarget.style.backgroundColor = "var(--accent-dim)";
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (activeSection !== item.label) {
+                  e.currentTarget.style.backgroundColor = "transparent";
+                }
+              }}
             >
-              <div className={`w-5 h-5 flex items-center justify-center shrink-0 ${activeSection === item.label ? "text-[#D9FF00]" : "text-gray-400"}`}>
+              <div className="w-5 h-5 flex items-center justify-center shrink-0" style={{ color: activeSection === item.label ? "var(--accent)" : "#9ca3af" }}>
                 {item.icon}
               </div>
               <span className="text-sm truncate">{item.label}</span>
@@ -169,75 +254,79 @@ export default function PersonalizationWindow({
 
         <div className="flex-1 flex flex-col min-w-0 bg-[#151F27]">
           <div className="flex-1 overflow-auto p-6">
-            {activeSection === "Background" && (
-              <div className="space-y-6">
-                <h2 className="text-xl font-bold text-[#D9FF00]">Background</h2>
-                <p className="text-sm text-gray-400">Background image, color, slideshow</p>
+             {activeSection === "Background" && (
+               <div className="space-y-6">
+                 <h2 className="text-xl font-bold" style={{ color: "var(--accent)" }}>Background</h2>
+                 <p className="text-sm text-gray-400">Background image, color, slideshow</p>
 
-                <div className="grid grid-cols-2 gap-4 mt-6">
-                  {wallpaperOptions.map((option) => (
-                    <button
-                      key={option.id}
-                      onClick={() => setSelectedWallpaper(option.id)}
-                      className={`border p-4 transition-colors text-left ${selectedWallpaper === option.id
-                          ? "border-[#D9FF00] bg-[#D9FF00]/10"
-                          : "border-gray-700 hover:border-[#D9FF00]/50"
-                        }`}
-                      style={{ borderRadius: 0, backgroundColor: selectedWallpaper === option.id ? "rgba(217,255,0,0.05)" : option.color }}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div
-                          className="w-12 h-12 border border-gray-600"
-                          style={{ borderRadius: 0, backgroundColor: option.color }}
-                        />
-                        <div>
-                          <p className="text-sm font-semibold text-gray-200">{option.name}</p>
-                          {selectedWallpaper === option.id && (
-                            <p className="text-xs text-[#D9FF00] mt-1">Selected</p>
-                          )}
-                        </div>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
+                 <div className="grid grid-cols-2 gap-4 mt-6">
+                   {wallpaperOptions.map((option) => (
+                     <button
+                       key={option.id}
+                       onClick={() => setSelectedWallpaper(option.id)}
+                       className="border p-4 transition-colors text-left"
+                       style={{
+                         borderRadius: 0,
+                         borderColor: selectedWallpaper === option.id ? "var(--accent)" : "#374151",
+                         backgroundColor: selectedWallpaper === option.id ? "var(--accent-dim)" : option.color,
+                       }}
+                     >
+                       <div className="flex items-center gap-3">
+                         <div
+                           className="w-12 h-12 border border-gray-600"
+                           style={{ borderRadius: 0, backgroundColor: option.color }}
+                         />
+                         <div>
+                           <p className="text-sm font-semibold text-gray-200">{option.name}</p>
+                           {selectedWallpaper === option.id && (
+                             <p className="text-xs mt-1" style={{ color: "var(--accent)" }}>Selected</p>
+                           )}
+                         </div>
+                       </div>
+                     </button>
+                   ))}
+                 </div>
+               </div>
+             )}
 
-            {activeSection === "Colors" && (
-              <div className="space-y-6">
-                <h2 className="text-xl font-bold text-[#D9FF00]">Colors</h2>
-                <p className="text-sm text-gray-400">Accent color, transparency effects, color theme</p>
+             {activeSection === "Colors" && (
+               <div className="space-y-6">
+                 <h2 className="text-xl font-bold" style={{ color: "var(--accent)" }}>Colors</h2>
+                 <p className="text-sm text-gray-400">Accent color, transparency effects, color theme</p>
 
-                <div className="mt-6">
-                  <h3 className="text-sm font-semibold text-gray-300 mb-3">Choose your color mode</h3>
-                  <div className="grid grid-cols-3 gap-4">
-                    {themeOptions.map((option) => (
-                      <button
-                        key={option.id}
-                        onClick={() => setSelectedTheme(option.id)}
-                        className={`border p-4 transition-colors text-left ${selectedTheme === option.id
-                            ? "border-[#D9FF00] bg-[#D9FF00]/10"
-                            : "border-gray-700 hover:border-[#D9FF00]/50"
-                          }`}
-                        style={{ borderRadius: 0, backgroundColor: option.color }}
-                      >
-                        <p className="text-sm font-semibold text-gray-200">{option.name}</p>
-                        {selectedTheme === option.id && (
-                          <p className="text-xs text-[#D9FF00] mt-1">Selected</p>
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                 <div className="mt-6">
+                   <h3 className="text-sm font-semibold text-gray-300 mb-3">Choose your color mode</h3>
+                   <div className="grid grid-cols-3 gap-4">
+                     {themeOptions.map((option) => (
+                       <button
+                         key={option.id}
+                         onClick={() => setSelectedTheme(option.id)}
+                         className="border p-4 transition-colors text-left"
+                         style={{
+                           borderRadius: 0,
+                           borderColor: selectedTheme === option.id ? "var(--accent)" : "#374151",
+                           backgroundColor: selectedTheme === option.id ? "var(--accent-dim)" : option.color,
+                         }}
+                       >
+                         <p className="text-sm font-semibold text-gray-200">{option.name}</p>
+                         {selectedTheme === option.id && (
+                           <p className="text-xs mt-1" style={{ color: "var(--accent)" }}>Selected</p>
+                         )}
+                       </button>
+                     ))}
+                   </div>
+                 </div>
 
                 <div className="mt-6">
                   <h3 className="text-sm font-semibold text-gray-300 mb-3">Accent color</h3>
                   <div className="flex flex-wrap gap-2">
-                    {["#D9FF00", "#0078d4", "#e81123", "#00b7c3", "#e3008c", "#ff8c00"].map((color) => (
+                    {accentColors.map((item) => (
                       <button
-                        key={color}
-                        className="w-10 h-10 border border-gray-600 hover:border-[#D9FF00] transition-colors"
-                        style={{ borderRadius: 0, backgroundColor: color }}
+                        key={item.id}
+                        onClick={() => applyAccentColor(item.id)}
+                        className={`w-10 h-10 border transition-colors ${selectedAccent === item.id ? "border-white" : "border-gray-600 hover:border-white"}`}
+                        style={{ borderRadius: 0, backgroundColor: item.id }}
+                        title={item.name}
                       />
                     ))}
                   </div>
@@ -245,83 +334,83 @@ export default function PersonalizationWindow({
               </div>
             )}
 
-            {activeSection === "Themes" && (
-              <div className="space-y-6">
-                <h2 className="text-xl font-bold text-[#D9FF00]">Themes</h2>
-                <p className="text-sm text-gray-400">Install, create, manage</p>
+             {activeSection === "Themes" && (
+               <div className="space-y-6">
+                 <h2 className="text-xl font-bold" style={{ color: "var(--accent)" }}>Themes</h2>
+                 <p className="text-sm text-gray-400">Install, create, manage</p>
 
-                <div className="mt-6 border border-gray-700 p-8 text-center" style={{ borderRadius: 0, backgroundColor: "#1a2332" }}>
-                  <Brush className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                  <p className="text-sm text-gray-300 mb-1">No themes installed</p>
-                  <p className="text-xs text-gray-500">Browse the Store for themes to personalize your device.</p>
-                </div>
-              </div>
-            )}
+                 <div className="mt-6 border border-gray-700 p-8 text-center" style={{ borderRadius: 0, backgroundColor: "#1a2332" }}>
+                   <Brush className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                   <p className="text-sm text-gray-300 mb-1">No themes installed</p>
+                   <p className="text-xs text-gray-500">Browse the Store for themes to personalize your device.</p>
+                 </div>
+               </div>
+             )}
 
-            {activeSection === "Lock screen" && (
-              <div className="space-y-6">
-                <h2 className="text-xl font-bold text-[#D9FF00]">Lock screen</h2>
-                <p className="text-sm text-gray-400">Lock screen images, apps, animations</p>
+             {activeSection === "Lock screen" && (
+               <div className="space-y-6">
+                 <h2 className="text-xl font-bold" style={{ color: "var(--accent)" }}>Lock screen</h2>
+                 <p className="text-sm text-gray-400">Lock screen images, apps, animations</p>
 
-                <div className="mt-6 border border-gray-700 p-8 text-center" style={{ borderRadius: 0, backgroundColor: "#1a2332" }}>
-                  <Lock className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                  <p className="text-sm text-gray-300 mb-1">Lock screen settings</p>
-                  <p className="text-xs text-gray-500">Customize your lock screen experience.</p>
-                </div>
-              </div>
-            )}
+                 <div className="mt-6 border border-gray-700 p-8 text-center" style={{ borderRadius: 0, backgroundColor: "#1a2332" }}>
+                   <Lock className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                   <p className="text-sm text-gray-300 mb-1">Lock screen settings</p>
+                   <p className="text-xs text-gray-500">Customize your lock screen experience.</p>
+                 </div>
+               </div>
+             )}
 
-            {activeSection === "Touch keyboard" && (
-              <div className="space-y-6">
-                <h2 className="text-xl font-bold text-[#D9FF00]">Touch keyboard</h2>
-                <p className="text-sm text-gray-400">Themes, size</p>
+             {activeSection === "Touch keyboard" && (
+               <div className="space-y-6">
+                 <h2 className="text-xl font-bold" style={{ color: "var(--accent)" }}>Touch keyboard</h2>
+                 <p className="text-sm text-gray-400">Themes, size</p>
 
-                <div className="mt-6 border border-gray-700 p-8 text-center" style={{ borderRadius: 0, backgroundColor: "#1a2332" }}>
-                  <Keyboard className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                  <p className="text-sm text-gray-300 mb-1">Touch keyboard settings</p>
-                  <p className="text-xs text-gray-500">Customize your touch keyboard appearance.</p>
-                </div>
-              </div>
-            )}
+                 <div className="mt-6 border border-gray-700 p-8 text-center" style={{ borderRadius: 0, backgroundColor: "#1a2332" }}>
+                   <Keyboard className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                   <p className="text-sm text-gray-300 mb-1">Touch keyboard settings</p>
+                   <p className="text-xs text-gray-500">Customize your touch keyboard appearance.</p>
+                 </div>
+               </div>
+             )}
 
-            {activeSection === "Start" && (
-              <div className="space-y-6">
-                <h2 className="text-xl font-bold text-[#D9FF00]">Start</h2>
-                <p className="text-sm text-gray-400">Recent apps and items, folders</p>
+             {activeSection === "Start" && (
+               <div className="space-y-6">
+                 <h2 className="text-xl font-bold" style={{ color: "var(--accent)" }}>Start</h2>
+                 <p className="text-sm text-gray-400">Recent apps and items, folders</p>
 
-                <div className="mt-6 border border-gray-700 p-8 text-center" style={{ borderRadius: 0, backgroundColor: "#1a2332" }}>
-                  <LayoutGrid className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                  <p className="text-sm text-gray-300 mb-1">Start menu settings</p>
-                  <p className="text-xs text-gray-500">Customize your Start menu layout and behavior.</p>
-                </div>
-              </div>
-            )}
+                 <div className="mt-6 border border-gray-700 p-8 text-center" style={{ borderRadius: 0, backgroundColor: "#1a2332" }}>
+                   <LayoutGrid className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                   <p className="text-sm text-gray-300 mb-1">Start menu settings</p>
+                   <p className="text-xs text-gray-500">Customize your Start menu layout and behavior.</p>
+                 </div>
+               </div>
+             )}
 
-            {activeSection === "Taskbar" && (
-              <div className="space-y-6">
-                <h2 className="text-xl font-bold text-[#D9FF00]">Taskbar</h2>
-                <p className="text-sm text-gray-400">Taskbar behaviors, system pins</p>
+             {activeSection === "Taskbar" && (
+               <div className="space-y-6">
+                 <h2 className="text-xl font-bold" style={{ color: "var(--accent)" }}>Taskbar</h2>
+                 <p className="text-sm text-gray-400">Taskbar behaviors, system pins</p>
 
-                <div className="mt-6 border border-gray-700 p-8 text-center" style={{ borderRadius: 0, backgroundColor: "#1a2332" }}>
-                  <Monitor className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                  <p className="text-sm text-gray-300 mb-1">Taskbar settings</p>
-                  <p className="text-xs text-gray-500">Customize taskbar appearance and behavior.</p>
-                </div>
-              </div>
-            )}
+                 <div className="mt-6 border border-gray-700 p-8 text-center" style={{ borderRadius: 0, backgroundColor: "#1a2332" }}>
+                   <Monitor className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                   <p className="text-sm text-gray-300 mb-1">Taskbar settings</p>
+                   <p className="text-xs text-gray-500">Customize taskbar appearance and behavior.</p>
+                 </div>
+               </div>
+             )}
 
-            {activeSection === "Fonts" && (
-              <div className="space-y-6">
-                <h2 className="text-xl font-bold text-[#D9FF00]">Fonts</h2>
-                <p className="text-sm text-gray-400">Install, manage</p>
+             {activeSection === "Fonts" && (
+               <div className="space-y-6">
+                 <h2 className="text-xl font-bold" style={{ color: "var(--accent)" }}>Fonts</h2>
+                 <p className="text-sm text-gray-400">Install, manage</p>
 
-                <div className="mt-6 border border-gray-700 p-8 text-center" style={{ borderRadius: 0, backgroundColor: "#1a2332" }}>
-                  <Type className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                  <p className="text-sm text-gray-300 mb-1">Font settings</p>
-                  <p className="text-xs text-gray-500">Browse and install fonts for your system.</p>
-                </div>
-              </div>
-            )}
+                 <div className="mt-6 border border-gray-700 p-8 text-center" style={{ borderRadius: 0, backgroundColor: "#1a2332" }}>
+                   <Type className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                   <p className="text-sm text-gray-300 mb-1">Font settings</p>
+                   <p className="text-xs text-gray-500">Browse and install fonts for your system.</p>
+                 </div>
+               </div>
+             )}
           </div>
         </div>
       </div>

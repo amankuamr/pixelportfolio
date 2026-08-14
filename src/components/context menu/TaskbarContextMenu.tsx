@@ -33,10 +33,10 @@ export default function TaskbarContextMenu({ x, windowId, windowTitle, onClose, 
               onCloseWindow(windowId);
               onClose();
             }}
-            className="group w-full flex items-center justify-between px-3 py-1.5 text-left bg-transparent hover:bg-[#D9FF00] hover:text-[#151F27] transition-colors duration-150"
+            className="group w-full flex items-center justify-between px-3 py-1.5 text-left bg-transparent hover-accent-bg hover-dark-text transition-colors duration-150"
           >
-            <span className="text-sm text-gray-200 group-hover:text-[#151F27]">Close</span>
-            <span className="text-xs text-gray-400 group-hover:text-[#151F27]">{windowTitle}</span>
+            <span className="text-sm text-gray-200">Close</span>
+            <span className="text-xs text-gray-400">{windowTitle}</span>
           </button>
         </div>
       </motion.div>

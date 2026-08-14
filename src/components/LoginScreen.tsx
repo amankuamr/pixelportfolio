@@ -55,7 +55,7 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
                     className="text-6xl font-bold text-white mb-2"
                     style={{ fontFamily: "var(--font-agern), Arial, sans-serif" }}
                   >
-                    Portfolio<span className="text-[#D9FF00]">XP</span>
+                    Portfolio<span className="accent-text">XP</span>
                   </h1>
                   <p
                     className="text-lg text-gray-300 font-light"
@@ -86,7 +86,7 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
                 className="flex items-center gap-4 cursor-pointer group"
               >
                 <div
-                  className="w-20 h-20 border-2 border-[#D9FF00] bg-[#1a2332] flex items-center justify-center group-hover:bg-[#D9FF00]/10 transition-colors overflow-hidden"
+                  className="w-20 h-20 border-2 accent-border bg-[#1a2332] flex items-center justify-center group-hover-accent-bg transition-colors overflow-hidden"
                   style={{ borderRadius: 0 }}
                 >
                   <img
@@ -104,7 +104,7 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
                     User
                   </h2>
                   <p
-                    className="text-sm text-[#D9FF00] font-normal"
+                    className="text-sm accent-text font-normal"
                     style={{ fontFamily: "var(--font-agern), Arial, sans-serif" }}
                   >
                     Visual Designer

@@ -124,10 +124,10 @@ export default function StartButtonContextMenu({ onClose, onSelect }: StartButto
                           key={subItem.label}
                           onMouseDown={(e) => e.stopPropagation()}
                           onClick={() => handleItemClick(subItem.action)}
-                          className="group w-full flex items-center justify-between px-3 py-1.5 text-left bg-transparent hover:bg-[#D9FF00] hover:text-[#151F27] transition-colors duration-150"
-                        >
-                          <span className="text-sm text-gray-200 group-hover:text-[#151F27]">{subItem.label}</span>
-                        </button>
+                           className="group w-full flex items-center justify-between px-3 py-1.5 text-left bg-transparent hover-accent-bg hover-dark-text transition-colors duration-150"
+                         >
+                           <span className="text-sm text-gray-200">{subItem.label}</span>
+                         </button>
                       );
                     }
                     return null;
@@ -141,9 +141,9 @@ export default function StartButtonContextMenu({ onClose, onSelect }: StartButto
                 key={item.label}
                 onMouseDown={(e) => e.stopPropagation()}
                 onClick={() => handleItemClick(item.action)}
-                className="group w-full flex items-center justify-between px-3 py-1.5 text-left bg-transparent hover:bg-[#D9FF00] hover:text-[#151F27] transition-colors duration-150"
+                className="group w-full flex items-center justify-between px-3 py-1.5 text-left bg-transparent hover-accent-bg hover-dark-text transition-colors duration-150"
               >
-                <span className="text-sm text-gray-200 group-hover:text-[#151F27]">{item.label}</span>
+                <span className="text-sm text-gray-200">{item.label}</span>
               </button>
             );
           })}

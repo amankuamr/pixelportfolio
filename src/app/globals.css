@@ -3,6 +3,9 @@
 :root {
   --background: #151F27;
   --foreground: #f0f0f0;
+  --accent: #D9FF00;
+  --accent-dim: rgba(217, 255, 0, 0.1);
+  --accent-border: rgba(217, 255, 0, 0.3);
 }
 
 @theme inline {
@@ -72,4 +75,72 @@ body {
 .cmd-scrollbar {
   scrollbar-width: thin;
   scrollbar-color: #00ff00 #000000;
+}
+
+.accent-text {
+  color: var(--accent);
+}
+
+.accent-bg {
+  background-color: var(--accent);
+}
+
+.accent-border {
+  border-color: var(--accent);
+}
+
+.accent-text-dim {
+  color: var(--accent-dim);
+}
+
+.accent-bg-dim {
+  background-color: var(--accent-dim);
+}
+
+.accent-border-dim {
+  border-color: var(--accent-border);
+}
+
+.accent-bg-dim-20 {
+  background-color: rgba(217, 255, 0, 0.2);
+}
+
+.accent-bg-dim-10 {
+  background-color: rgba(217, 255, 0, 0.1);
+}
+
+.accent-border-30 {
+  border-color: rgba(217, 255, 0, 0.3);
+}
+
+.hover-accent-bg-20:hover {
+  background-color: rgba(217, 255, 0, 0.2);
+}
+
+.hover-accent-bg:hover {
+  background-color: var(--accent-dim);
+}
+
+.hover-accent-border:hover {
+  border-color: var(--accent);
+}
+
+.hover-accent-text:hover {
+  color: var(--accent);
+}
+
+.group:hover .group-hover-accent-text {
+  color: var(--accent);
+}
+
+.group:hover .group-hover-accent-bg {
+  background-color: var(--accent-dim);
+}
+
+.group:hover .group-hover-accent-border {
+  border-color: var(--accent);
+}
+
+.hover-dark-text:hover {
+  color: #151F27;
 }

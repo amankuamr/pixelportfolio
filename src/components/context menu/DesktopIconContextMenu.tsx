@@ -33,23 +33,23 @@ export default function DesktopIconContextMenu({ x, y, onClose, onOpen, onCopy, 
           <button
             onMouseDown={(e) => e.stopPropagation()}
             onClick={() => { onOpen(); onClose(); }}
-            className="group w-full flex items-center justify-between px-3 py-1.5 text-left bg-transparent hover:bg-[#D9FF00] hover:text-[#151F27] transition-colors duration-150"
+            className="group w-full flex items-center justify-between px-3 py-1.5 text-left bg-transparent hover-accent-bg hover-dark-text transition-colors duration-150"
           >
-            <span className="text-sm text-gray-200 group-hover:text-[#151F27]">Open</span>
+            <span className="text-sm text-gray-200">Open</span>
           </button>
           <button
             onMouseDown={(e) => e.stopPropagation()}
             onClick={() => { onCopy(); onClose(); }}
-            className="group w-full flex items-center justify-between px-3 py-1.5 text-left bg-transparent hover:bg-[#D9FF00] hover:text-[#151F27] transition-colors duration-150"
+            className="group w-full flex items-center justify-between px-3 py-1.5 text-left bg-transparent hover-accent-bg hover-dark-text transition-colors duration-150"
           >
-            <span className="text-sm text-gray-200 group-hover:text-[#151F27]">Copy</span>
+            <span className="text-sm text-gray-200">Copy</span>
           </button>
           <button
             onMouseDown={(e) => e.stopPropagation()}
             onClick={() => { onRename(); onClose(); }}
-            className="group w-full flex items-center justify-between px-3 py-1.5 text-left bg-transparent hover:bg-[#D9FF00] hover:text-[#151F27] transition-colors duration-150"
+            className="group w-full flex items-center justify-between px-3 py-1.5 text-left bg-transparent hover-accent-bg hover-dark-text transition-colors duration-150"
           >
-            <span className="text-sm text-gray-200 group-hover:text-[#151F27]">Rename</span>
+            <span className="text-sm text-gray-200">Rename</span>
           </button>
           <button
             onMouseDown={(e) => e.stopPropagation()}
@@ -62,9 +62,9 @@ export default function DesktopIconContextMenu({ x, y, onClose, onOpen, onCopy, 
           <button
             onMouseDown={(e) => e.stopPropagation()}
             onClick={() => { onProperties(); onClose(); }}
-            className="group w-full flex items-center justify-between px-3 py-1.5 text-left bg-transparent hover:bg-[#D9FF00] hover:text-[#151F27] transition-colors duration-150"
+            className="group w-full flex items-center justify-between px-3 py-1.5 text-left bg-transparent hover-accent-bg hover-dark-text transition-colors duration-150"
           >
-            <span className="text-sm text-gray-200 group-hover:text-[#151F27]">Properties</span>
+            <span className="text-sm text-gray-200">Properties</span>
           </button>
         </div>
       </motion.div>

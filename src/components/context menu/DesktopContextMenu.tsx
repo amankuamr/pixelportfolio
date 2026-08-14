@@ -112,27 +112,27 @@ export default function DesktopContextMenu({ x, y, isFullscreen, onToggleFullscr
                   }, 1000);
                 }}
               >
-                <button
-                  onClick={item.label === "Full screen" ? onToggleFullscreen : item.label === "Check version" ? onCheckVersion : item.label === "Personalize" && onPersonalize ? onPersonalize : item.label === "Paste" && onPaste ? onPaste : undefined}
-                  className="group w-full flex items-center justify-between px-3 py-1.5 text-left bg-transparent hover:bg-[#D9FF00] hover:text-[#151F27] transition-colors duration-150"
-                >
-                  <span className="text-sm text-gray-200 group-hover:text-[#151F27]">{item.label}</span>
-                  <div className="flex items-center gap-2">
-                    {item.shortcut && (
-                      <span className="text-xs text-gray-400 group-hover:text-[#151F27]">{item.shortcut}</span>
-                    )}
-                    {hasSubmenu && (
-                      <svg className="w-3 h-3 text-gray-400 group-hover:text-[#151F27]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                        <path d="M9 18l6-6-6-6" />
-                      </svg>
-                    )}
-                    {item.active && (
-                      <svg className="w-3 h-3 text-[#D9FF00]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                        <path d="M20 6L9 17l-5-5" />
-                      </svg>
-                    )}
-                  </div>
-                </button>
+                 <button
+                   onClick={item.label === "Full screen" ? onToggleFullscreen : item.label === "Check version" ? onCheckVersion : item.label === "Personalize" && onPersonalize ? onPersonalize : item.label === "Paste" && onPaste ? onPaste : undefined}
+                   className="group w-full flex items-center justify-between px-3 py-1.5 text-left bg-transparent hover-accent-bg hover-accent-text transition-colors duration-150"
+                 >
+                   <span className="text-sm text-gray-200">{item.label}</span>
+                   <div className="flex items-center gap-2">
+                     {item.shortcut && (
+                       <span className="text-xs text-gray-400">{item.shortcut}</span>
+                     )}
+                     {hasSubmenu && (
+                       <svg className="w-3 h-3 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                         <path d="M9 18l6-6-6-6" />
+                       </svg>
+                     )}
+                     {item.active && (
+                       <svg className="w-3 h-3 accent-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                         <path d="M20 6L9 17l-5-5" />
+                       </svg>
+                     )}
+                   </div>
+                 </button>
 
                 <AnimatePresence>
                   {hasSubmenu && openSubmenu === item.label && (
@@ -160,12 +160,12 @@ export default function DesktopContextMenu({ x, y, isFullscreen, onToggleFullscr
                     >
                       <div className="p-1">
                         {item.submenu!.map((subItem, subIndex) => (
-                          <button
-                            key={subIndex}
-                            className="group w-full flex items-center justify-between px-3 py-1.5 text-left bg-transparent hover:bg-[#D9FF00] hover:text-[#151F27] transition-colors duration-150"
-                          >
-                            <span className="text-sm text-gray-200 group-hover:text-[#151F27]">{subItem.label}</span>
-                          </button>
+                           <button
+                             key={subIndex}
+ className="group w-full flex items-center justify-between px-3 py-1.5 text-left bg-transparent hover-accent-bg hover-accent-text transition-colors duration-150"
+                           >
+                             <span className="text-sm text-gray-200">{subItem.label}</span>
+                           </button>
                         ))}
                       </div>
                     </motion.div>

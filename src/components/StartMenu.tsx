@@ -60,7 +60,7 @@ export default function StartMenu() {
     <div className="relative" ref={menuRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-10 h-10 flex items-center justify-center border border-gray-600 hover:border-[#D9FF00] hover:bg-[#D9FF00]/10 transition-colors"
+        className="w-10 h-10 flex items-center justify-center border border-gray-600 hover-accent-border hover-accent-bg transition-colors"
       >
         <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5">
           <rect x="2" y="2" width="9" height="9" fill="#f25022" />
@@ -103,7 +103,7 @@ export default function StartMenu() {
                     key={item.label}
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.99 }}
-                    className="w-full flex items-center gap-3 px-3 py-2 hover:bg-[#D9FF00]/10 border border-transparent hover:border-[#D9FF00] transition-colors text-left"
+                    className="w-full flex items-center gap-3 px-3 py-2 hover-accent-bg hover-accent-border border border-transparent transition-colors text-left"
                   >
                     <div className="w-7 h-7 flex items-center justify-center border border-gray-600 shrink-0">
                       <item.icon className="w-3.5 h-3.5 text-gray-300" />
@@ -118,7 +118,7 @@ export default function StartMenu() {
                   whileHover={{ scale: 1.01 }}
                   whileTap={{ scale: 0.99 }}
                   onClick={() => setShowAllApps(!showAllApps)}
-                  className="w-full flex items-center justify-between px-3 py-2 hover:bg-[#D9FF00]/10 border border-transparent hover:border-[#D9FF00] transition-colors text-left"
+                  className="w-full flex items-center justify-between px-3 py-2 hover-accent-bg hover-accent-border border border-transparent transition-colors text-left"
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-7 h-7 flex items-center justify-center border border-gray-600 shrink-0">
@@ -158,7 +158,7 @@ export default function StartMenu() {
                           <motion.button
                             key={app.label}
                             whileHover={{ scale: 1.01 }}
-                            className="w-full flex items-center gap-3 px-3 py-2 hover:bg-[#D9FF00]/10 border border-transparent hover:border-[#D9FF00] transition-colors text-left"
+className="w-full flex items-center gap-3 px-3 py-2 hover-accent-bg hover-accent-border border border-transparent transition-colors text-left"
                           >
                             <div className="w-6 h-6 flex items-center justify-center border border-gray-600 shrink-0">
                               <app.icon className="w-3 h-3 text-gray-300" />
@@ -178,7 +178,7 @@ export default function StartMenu() {
                     {["📋", "📊", "⚙️", "🔍"].map((icon, i) => (
                       <div
                         key={i}
-                        className="aspect-square flex items-center justify-center border border-gray-600 hover:border-[#D9FF00] hover:bg-[#D9FF00]/10 transition-colors cursor-pointer"
+                        className="aspect-square flex items-center justify-center border border-gray-600 hover-accent-border hover-accent-bg transition-colors cursor-pointer"
                       >
                         <span className="text-lg">{icon}</span>
                       </div>
@@ -195,7 +195,7 @@ export default function StartMenu() {
                     <motion.button
                       key={tile.title}
                       whileHover={{ scale: 1.05 }}
-                      className={`border border-gray-600 flex flex-col items-center justify-center gap-1 hover:border-[#D9FF00] hover:bg-[#D9FF00]/10 transition-colors h-full w-full ${
+                      className={`border border-gray-600 flex flex-col items-center justify-center gap-1 hover-accent-border hover-accent-bg transition-colors h-full w-full ${
                         tile.size === "wide" ? "col-span-2 row-span-1" :
                         tile.size === "tall" ? "col-span-1 row-span-2" :
                         "col-span-1 row-span-1"

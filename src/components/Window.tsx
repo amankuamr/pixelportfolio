@@ -80,7 +80,7 @@ export default function Window({
       }}
     >
       <div
-        className="h-10 bg-[#1a2332] border-b border-[#D9FF00]/30 flex items-center px-3 gap-2 cursor-move select-none"
+        className="h-10 bg-[#1a2332] border-b accent-border-30 flex items-center px-3 gap-2 cursor-move select-none"
         onMouseDown={handleMouseDown}
       >
         <div className="w-4 h-4 flex items-center justify-center text-gray-400">

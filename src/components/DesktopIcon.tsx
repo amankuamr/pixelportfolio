@@ -84,7 +84,7 @@ export default function DesktopIcon({ label, icon, onDoubleClick, position, onDr
       className="absolute flex flex-col items-center gap-2 p-2 cursor-pointer transition-colors w-24 group select-none"
       style={{ left: 0, top: 0 }}
     >
-      <div className="w-16 h-16 flex items-center justify-center border border-gray-400 bg-[#D9FF00]/10 group-hover:border-[#D9FF00] group-hover:bg-[#D9FF00]/20 transition-colors">
+      <div className="w-16 h-16 flex items-center justify-center border border-gray-400 accent-bg-dim group-hover-accent-border group-hover-accent-bg transition-colors">
         <div className="w-12 h-12 flex items-center justify-center">
           {icon}
         </div>
@@ -97,7 +97,7 @@ export default function DesktopIcon({ label, icon, onDoubleClick, position, onDr
           onKeyDown={handleRenameKeyDown}
           onBlur={onRenameSubmit}
           autoFocus
-          className="text-xs text-white text-center drop-shadow-md leading-tight line-clamp-2 font-medium bg-transparent border border-[#D9FF00] outline-none px-1 w-full"
+          className="text-xs text-white text-center drop-shadow-md leading-tight line-clamp-2 font-medium bg-transparent accent-border outline-none px-1 w-full"
         />
       ) : (
         <span className="text-xs text-white text-center drop-shadow-md leading-tight line-clamp-2 font-medium">

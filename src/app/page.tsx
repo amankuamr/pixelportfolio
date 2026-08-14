@@ -284,10 +284,10 @@ export default function Home() {
       resume: <ResumeImageIcon className="w-full h-full" />,
       cmd: (
         <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
-          <rect x="3" y="3" width="18" height="18" stroke="#D9FF00" strokeWidth="2" />
-          <line x1="7" y1="8" x2="17" y2="8" stroke="#D9FF00" strokeWidth="2" />
-          <line x1="7" y1="12" x2="17" y2="12" stroke="#D9FF00" strokeWidth="2" />
-          <line x1="7" y1="16" x2="13" y2="16" stroke="#D9FF00" strokeWidth="2" />
+          <rect x="3" y="3" width="18" height="18" stroke="var(--accent)" strokeWidth="2" />
+          <line x1="7" y1="8" x2="17" y2="8" stroke="var(--accent)" strokeWidth="2" />
+          <line x1="7" y1="12" x2="17" y2="12" stroke="var(--accent)" strokeWidth="2" />
+          <line x1="7" y1="16" x2="13" y2="16" stroke="var(--accent)" strokeWidth="2" />
         </svg>
       ),
     };
@@ -422,7 +422,7 @@ export default function Home() {
           const contentMap: Record<string, React.ReactNode> = {
             about: (
               <div className="space-y-4">
-                <h2 className="text-2xl font-bold text-[#D9FF00]">Hello, I&apos;m a Designer</h2>
+                <h2 className="text-2xl font-bold accent-text">Hello, I&apos;m a Designer</h2>
                 <p className="text-gray-300 font-light">
                   I create beautiful and functional user experiences. Welcome to my portfolio!
                 </p>
@@ -430,25 +430,25 @@ export default function Home() {
             ),
             projects: (
               <div className="space-y-4">
-                <h2 className="text-2xl font-bold text-[#D9FF00]">My Projects</h2>
+                <h2 className="text-2xl font-bold accent-text">My Projects</h2>
                 <p className="text-gray-300 font-light">Check out my latest work here.</p>
               </div>
             ),
             skills: (
               <div className="space-y-4">
-                <h2 className="text-2xl font-bold text-[#D9FF00]">Skills</h2>
+                <h2 className="text-2xl font-bold accent-text">Skills</h2>
                 <p className="text-gray-300 font-light">My technical and design skills.</p>
               </div>
             ),
             contact: (
               <div className="space-y-4">
-                <h2 className="text-2xl font-bold text-[#D9FF00]">Contact</h2>
+                <h2 className="text-2xl font-bold accent-text">Contact</h2>
                 <p className="text-gray-300 font-light">Get in touch with me.</p>
               </div>
             ),
             resume: (
               <div className="space-y-4">
-                <h2 className="text-2xl font-bold text-[#D9FF00]">Resume</h2>
+                <h2 className="text-2xl font-bold accent-text">Resume</h2>
                 <p className="text-gray-300 font-light">My resume and work experience.</p>
               </div>
             ),

@@ -135,7 +135,7 @@ export default function OperaAbout({
         return (
           <div className="h-full overflow-auto" style={{ backgroundColor: "#151F27" }}>
             <div className="flex flex-col items-center pt-10 pb-6">
-              <h1 className="text-5xl font-bold text-[#D9FF00] mb-8" style={{ fontFamily: "var(--font-agern), Arial, sans-serif", letterSpacing: "-1px" }}>
+              <h1 className="text-5xl font-bold accent-text mb-8" style={{ fontFamily: "var(--font-agern), Arial, sans-serif", letterSpacing: "-1px" }}>
                 Aman Kumar
               </h1>
 
@@ -144,7 +144,7 @@ export default function OperaAbout({
                   className="flex items-center gap-3 px-4 py-3 border transition-colors"
                   style={{
                     backgroundColor: searchFocused ? "#1a2332" : "#0f1924",
-                    borderColor: searchFocused ? "#D9FF00" : "#374151",
+                    borderColor: searchFocused ? "var(--accent)" : "#374151",
                     borderRadius: 0,
                   }}
                 >
@@ -163,8 +163,8 @@ export default function OperaAbout({
                     onBlur={() => setSearchFocused(false)}
                     placeholder="Search..."
                   />
-                  <button onClick={handleSearch} className="w-8 h-8 flex items-center justify-center bg-[#D9FF00] hover:bg-[#c2e600] transition-colors shrink-0" style={{ borderRadius: 0 }}>
-                    <Search className="w-4 h-4 text-[#151F27]" />
+<button onClick={handleSearch} className="w-8 h-8 flex items-center justify-center accent-bg hover:bg-[#c2e600] transition-colors shrink-0" style={{ borderRadius: 0 }}>
+                     <Search className="w-4 h-4 accent-text" />
                   </button>
                 </div>
               </div>
@@ -176,7 +176,7 @@ export default function OperaAbout({
                       <Image src="/desktopico/Aboutme.png" alt="Aman Kumar" width={112} height={112} className="w-full h-full object-cover" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h2 className="text-xl font-bold text-[#D9FF00] mb-1">Aman Kumar</h2>
+                      <h2 className="text-xl font-bold accent-text mb-1">Aman Kumar</h2>
                       <p className="text-sm text-gray-400 mb-3">Visual Designer & Developer</p>
                       <p className="text-sm text-gray-300 leading-relaxed">
                         Passionate about creating beautiful and functional user experiences. Specializes in UI/UX design, frontend development, and building seamless digital products with modern aesthetics.
@@ -188,36 +188,36 @@ export default function OperaAbout({
                 <div>
                   <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Achievements</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div className="border border-gray-700 p-4 hover:border-[#D9FF00]/50 transition-colors" style={{ borderRadius: 0, backgroundColor: "#1a2332" }}>
+                    <div className="border border-gray-700 p-4 accent-border-30 hover:accent-border transition-colors" style={{ borderRadius: 0, backgroundColor: "#1a2332" }}>
                       <div className="flex items-center gap-3 mb-2">
                         <div className="w-10 h-10 border border-gray-600 flex items-center justify-center shrink-0" style={{ borderRadius: 0 }}>
                           <span className="text-lg">🏆</span>
                         </div>
-                        <h4 className="text-sm font-semibold text-[#D9FF00]">Best Portfolio</h4>
+                        <h4 className="text-sm font-semibold accent-text">Best Portfolio</h4>
                       </div>
                       <p className="text-xs text-gray-400 leading-relaxed">
                         Awarded for outstanding UI/UX design and technical implementation.
                       </p>
                     </div>
 
-                    <div className="border border-gray-700 p-4 hover:border-[#D9FF00]/50 transition-colors" style={{ borderRadius: 0, backgroundColor: "#1a2332" }}>
+                    <div className="border border-gray-700 p-4 accent-border-30 hover:accent-border transition-colors" style={{ borderRadius: 0, backgroundColor: "#1a2332" }}>
                       <div className="flex items-center gap-3 mb-2">
                         <div className="w-10 h-10 border border-gray-600 flex items-center justify-center shrink-0" style={{ borderRadius: 0 }}>
                           <span className="text-lg">⭐</span>
                         </div>
-                        <h4 className="text-sm font-semibold text-[#D9FF00]">Top Rated</h4>
+                        <h4 className="text-sm font-semibold accent-text">Top Rated</h4>
                       </div>
                       <p className="text-xs text-gray-400 leading-relaxed">
                         Consistently delivered high-quality projects with excellent client satisfaction.
                       </p>
                     </div>
 
-                    <div className="border border-gray-700 p-4 hover:border-[#D9FF00]/50 transition-colors" style={{ borderRadius: 0, backgroundColor: "#1a2332" }}>
+                    <div className="border border-gray-700 p-4 accent-border-30 hover:accent-border transition-colors" style={{ borderRadius: 0, backgroundColor: "#1a2332" }}>
                       <div className="flex items-center gap-3 mb-2">
                         <div className="w-10 h-10 border border-gray-600 flex items-center justify-center shrink-0" style={{ borderRadius: 0 }}>
                           <span className="text-lg">🚀</span>
                         </div>
-                        <h4 className="text-sm font-semibold text-[#D9FF00]">Open Source</h4>
+                        <h4 className="text-sm font-semibold accent-text">Open Source</h4>
                       </div>
                       <p className="text-xs text-gray-400 leading-relaxed">
                         Active contributor to open source projects with 1000+ GitHub stars.
@@ -290,8 +290,8 @@ export default function OperaAbout({
       <div className="w-12 bg-[#0f1924] border-r border-gray-700 flex flex-col items-center py-2 gap-1 shrink-0">
         <div className="w-8 h-8 flex items-center justify-center mb-2">
           <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5">
-            <circle cx="12" cy="12" r="10" stroke="#D9FF00" strokeWidth="2" />
-            <path d="M12 8v8M8 12h8" stroke="#D9FF00" strokeWidth="2" strokeLinecap="round" />
+            <circle cx="12" cy="12" r="10" stroke="var(--accent)" strokeWidth="2" />
+            <path d="M12 8v8M8 12h8" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round" />
           </svg>
         </div>
 
@@ -332,12 +332,12 @@ export default function OperaAbout({
           {tabs.map((tab) => (
             <div
               key={tab.id}
-              className={`group flex items-center gap-2 px-3 py-1.5 border transition-colors cursor-pointer ${activeTab === tab.id ? "border-[#D9FF00]/30 bg-[#D9FF00]/5" : "border-transparent hover:border-gray-600 hover:bg-gray-700/20"}`}
+              className={`group flex items-center gap-2 px-3 py-1.5 border transition-colors cursor-pointer ${activeTab === tab.id ? "accent-border-30 accent-bg-dim" : "border-transparent hover:border-gray-600 hover:bg-gray-700/20"}`}
               style={{ borderRadius: 0 }}
               onClick={() => setActiveTab(tab.id)}
             >
               {tab.icon && <span className="text-gray-400">{tab.icon}</span>}
-              <span className={`text-sm font-medium ${activeTab === tab.id ? "text-[#D9FF00]" : "text-gray-300"}`}>
+              <span className={`text-sm font-medium ${activeTab === tab.id ? "accent-text" : "text-gray-300"}`}>
                 {tab.label}
               </span>
               {tabs.length > 1 && (
@@ -346,10 +346,10 @@ export default function OperaAbout({
                     e.stopPropagation();
                     closeTab(tab.id);
                   }}
-                  className="w-5 h-5 flex items-center justify-center hover:bg-[#D9FF00]/20 transition-colors"
+                  className="w-5 h-5 flex items-center justify-center hover-accent-bg-20 transition-colors"
                   style={{ borderRadius: 0 }}
                 >
-                  <svg viewBox="0 0 24 24" fill="none" className="w-3.5 h-3.5 text-gray-400 hover:text-[#D9FF00]">
+                  <svg viewBox="0 0 24 24" fill="none" className="w-3.5 h-3.5 text-gray-400 hover-accent-text">
                     <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" strokeWidth="2.5" />
                     <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" strokeWidth="2.5" />
                   </svg>
@@ -360,7 +360,7 @@ export default function OperaAbout({
           <button
             onClick={addTab}
             disabled={tabs.length >= MAX_TABS}
-            className="w-6 h-6 flex items-center justify-center border border-gray-600 hover:border-[#D9FF00] hover:bg-[#D9FF00]/10 transition-colors text-gray-400 hover:text-[#D9FF00] disabled:opacity-30 disabled:cursor-not-allowed"
+            className="w-6 h-6 flex items-center justify-center border border-gray-600 hover-accent-border hover-accent-bg transition-colors text-gray-400 hover-accent-text disabled:opacity-30 disabled:cursor-not-allowed"
             style={{ borderRadius: 0 }}
           >
             <svg viewBox="0 0 24 24" fill="none" className="w-3.5 h-3.5">
@@ -370,10 +370,10 @@ export default function OperaAbout({
           </button>
 
           <div className="ml-auto flex items-center gap-1">
-            <button className="w-6 h-6 flex items-center justify-center hover:bg-[#D9FF00]/10 transition-colors" style={{ borderRadius: 0 }}>
+            <button className="w-6 h-6 flex items-center justify-center hover-accent-bg transition-colors" style={{ borderRadius: 0 }}>
               <Share2 className="w-3.5 h-3.5 text-gray-400" />
             </button>
-            <button className="w-6 h-6 flex items-center justify-center hover:bg-[#D9FF00]/10 transition-colors" style={{ borderRadius: 0 }}>
+            <button className="w-6 h-6 flex items-center justify-center hover-accent-bg transition-colors" style={{ borderRadius: 0 }}>
               <Download className="w-3.5 h-3.5 text-gray-400" />
             </button>
             <div className="window-controls flex items-center gap-0.5 ml-1">
@@ -428,13 +428,13 @@ export default function OperaAbout({
         {/* Navigation Bar */}
         <div className="h-9 bg-[#1a2332] border-b border-gray-700 flex items-center px-2 gap-1">
           <div className="flex items-center gap-0.5">
-            <button className="w-7 h-7 flex items-center justify-center hover:bg-[#D9FF00]/10 transition-colors" style={{ borderRadius: 0 }}>
+            <button className="w-7 h-7 flex items-center justify-center hover-accent-bg transition-colors" style={{ borderRadius: 0 }}>
               <ChevronLeft className="w-4 h-4 text-gray-300" />
             </button>
-            <button className="w-7 h-7 flex items-center justify-center hover:bg-[#D9FF00]/10 transition-colors" style={{ borderRadius: 0 }}>
+            <button className="w-7 h-7 flex items-center justify-center hover-accent-bg transition-colors" style={{ borderRadius: 0 }}>
               <ChevronRight className="w-4 h-4 text-gray-300" />
             </button>
-            <button className="w-7 h-7 flex items-center justify-center hover:bg-[#D9FF00]/10 transition-colors" style={{ borderRadius: 0 }}>
+            <button className="w-7 h-7 flex items-center justify-center hover-accent-bg transition-colors" style={{ borderRadius: 0 }}>
               <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4 text-gray-300">
                 <path d="M21 12a9 9 0 11-9-9c2.52 0 4.93 1 6.74 2.74L21 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 <path d="M21 3v5h-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -443,7 +443,7 @@ export default function OperaAbout({
           </div>
 
           <div className="flex-1 max-w-xl">
-            <div className={`flex items-center gap-2 px-3 py-1 border transition-colors ${searchFocused ? "border-[#D9FF00] bg-[#151F27]" : "border-gray-600 bg-[#0f1924]"}`} style={{ borderRadius: 0 }}>
+            <div className={`flex items-center gap-2 px-3 py-1 border transition-colors ${searchFocused ? "accent-border bg-[#151F27]" : "border-gray-600 bg-[#0f1924]"}`} style={{ borderRadius: 0 }}>
               <Search className="w-3.5 h-3.5 text-gray-400 shrink-0" />
               <input
                 type="text"

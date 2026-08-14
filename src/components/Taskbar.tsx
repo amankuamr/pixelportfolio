@@ -132,16 +132,16 @@ export default function Taskbar({ windows, onToggleMinimize, onTaskbarContextMen
                       e.stopPropagation();
                       setOpenPopup(null);
                     }}
-                    className="group w-full flex items-center gap-3 px-2 py-1.5 hover:bg-[#D9FF00]/10 border border-transparent hover:border-[#D9FF00] transition-colors text-left"
+                    className="group w-full flex items-center gap-3 px-2 py-1.5 hover-accent-bg border border-transparent hover-accent-border transition-colors text-left"
                   >
-                    <div className="w-6 h-6 flex items-center justify-center text-gray-300 group-hover:text-[#D9FF00]">
+                    <div className="w-6 h-6 flex items-center justify-center text-gray-300 group-hover-accent-text">
                       {item.icon}
                     </div>
-                    <span className="text-xs text-gray-200 group-hover:text-[#D9FF00] font-medium flex-1">
+                    <span className="text-xs text-gray-200 group-hover-accent-text font-medium flex-1">
                       {item.label}
                     </span>
                     {item.active && (
-                      <svg className="w-3 h-3 text-[#D9FF00]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                      <svg className="w-3 h-3 accent-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
                         <path d="M20 6L9 17l-5-5" />
                       </svg>
                     )}
@@ -180,7 +180,7 @@ export default function Taskbar({ windows, onToggleMinimize, onTaskbarContextMen
               e.preventDefault();
               onTaskbarContextMenu(win.id, e.clientX);
             }}
-            className={`h-10 w-10 flex items-center justify-center border transition-colors relative ${win.isMinimized ? "border-gray-600 bg-transparent hover:border-[#D9FF00] hover:bg-[#D9FF00]/10" : "border-[#D9FF00] bg-white/10 hover:bg-[#D9FF00]/20"
+            className={`h-10 w-10 flex items-center justify-center border transition-colors relative ${win.isMinimized ? "border-gray-600 bg-transparent hover-accent-border hover-accent-bg" : "accent-border bg-white/10 hover-accent-bg-20"
               } ${win.isMinimized ? "shadow-[0_2px_0_#22c55e]" : ""}`}
           >
             <div className="w-6 h-6 flex items-center justify-center">{win.icon}</div>
@@ -195,9 +195,9 @@ export default function Taskbar({ windows, onToggleMinimize, onTaskbarContextMen
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
-              className="w-8 h-8 flex items-center justify-center border border-[#D9FF00] bg-[#D9FF00]/10 hover:bg-[#D9FF00]/20 transition-colors"
+              className="w-8 h-8 flex items-center justify-center border accent-border accent-bg-dim-10 hover-accent-bg-20 transition-colors"
             >
-              <Info className="w-4 h-4 text-[#D9FF00]" />
+              <Info className="w-4 h-4 accent-text" />
             </motion.button>
             <AnimatePresence>
               {showInfoTooltip && (
@@ -206,18 +206,18 @@ export default function Taskbar({ windows, onToggleMinimize, onTaskbarContextMen
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 10, scale: 0.95 }}
                   transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                  className="absolute bottom-14 right-0 w-72 border border-[#D9FF00] z-[60]"
+                   className="absolute bottom-14 right-0 w-72 border accent-border-30 z-[60]"
                   style={{ backgroundColor: "#151F27", borderRadius: 0 }}
                 >
                   <div className="p-3">
-                    <p className="text-sm font-bold text-[#D9FF00] mb-2">Welcome to Pixel Portfolio by Aman Kumar</p>
+                     <p className="text-sm font-bold accent-text mb-2">Welcome to Pixel Portfolio by Aman Kumar</p>
                     <ul className="space-y-1 mb-2">
-                      <li className="text-xs text-gray-200 flex items-start gap-2">
-                        <span className="text-[#D9FF00] mt-0.5">•</span>
+                       <li className="text-xs text-gray-200 flex items-start gap-2">
+                         <span className="accent-text mt-0.5">•</span>
                         <span>Click desktop icons to open windows and explore sections</span>
                       </li>
-                      <li className="text-xs text-gray-200 flex items-start gap-2">
-                        <span className="text-[#D9FF00] mt-0.5">•</span>
+                       <li className="text-xs text-gray-200 flex items-start gap-2">
+                         <span className="accent-text mt-0.5">•</span>
                         <span>Drag windows by their title bar to rearrange them</span>
                       </li>
                     </ul>
@@ -239,7 +239,7 @@ export default function Taskbar({ windows, onToggleMinimize, onTaskbarContextMen
                 e.stopPropagation();
                 handleTogglePopup("info");
               }}
-              className="w-8 h-8 flex items-center justify-center border border-gray-600 hover:border-[#D9FF00] hover:bg-[#D9FF00]/10 transition-colors"
+               className="w-8 h-8 flex items-center justify-center border border-gray-600 hover-accent-border hover-accent-bg transition-colors"
             >
               <Info className="w-4 h-4 text-gray-300" />
             </button>
@@ -255,14 +255,14 @@ export default function Taskbar({ windows, onToggleMinimize, onTaskbarContextMen
                   style={{ backgroundColor: "#151F27", borderRadius: 0 }}
                 >
                   <div className="p-3">
-                    <p className="text-sm font-bold text-[#D9FF00] mb-2">Welcome to Pixel Portfolio by Aman Kumar</p>
+                     <p className="text-sm font-bold accent-text mb-2">Welcome to Pixel Portfolio by Aman Kumar</p>
                     <ul className="space-y-1 mb-2">
-                      <li className="text-xs text-gray-200 flex items-start gap-2">
-                        <span className="text-[#D9FF00] mt-0.5">•</span>
+                       <li className="text-xs text-gray-200 flex items-start gap-2">
+                         <span className="accent-text mt-0.5">•</span>
                         <span>Click desktop icons to open windows and explore sections</span>
                       </li>
-                      <li className="text-xs text-gray-200 flex items-start gap-2">
-                        <span className="text-[#D9FF00] mt-0.5">•</span>
+                       <li className="text-xs text-gray-200 flex items-start gap-2">
+                         <span className="accent-text mt-0.5">•</span>
                         <span>Drag windows by their title bar to rearrange them</span>
                       </li>
                     </ul>
@@ -283,7 +283,7 @@ export default function Taskbar({ windows, onToggleMinimize, onTaskbarContextMen
               e.stopPropagation();
               handleTogglePopup("arrow");
             }}
-            className="w-8 h-8 flex items-center justify-center border border-gray-600 hover:border-[#D9FF00] hover:bg-[#D9FF00]/10 transition-colors"
+            className="w-8 h-8 flex items-center justify-center border border-gray-600 hover-accent-border hover-accent-bg transition-colors"
           >
             <ChevronUp className="w-4 h-4 text-gray-300" />
           </button>
@@ -306,7 +306,7 @@ export default function Taskbar({ windows, onToggleMinimize, onTaskbarContextMen
               e.stopPropagation();
               handleTogglePopup("defender");
             }}
-            className="w-8 h-8 flex items-center justify-center border border-gray-600 hover:border-[#D9FF00] hover:bg-[#D9FF00]/10 transition-colors"
+            className="w-8 h-8 flex items-center justify-center border border-gray-600 hover-accent-border hover-accent-bg transition-colors"
           >
             <Shield className="w-4 h-4 text-gray-300" />
           </button>
@@ -329,7 +329,7 @@ export default function Taskbar({ windows, onToggleMinimize, onTaskbarContextMen
               e.stopPropagation();
               handleTogglePopup("volume");
             }}
-            className="w-8 h-8 flex items-center justify-center border border-gray-600 hover:border-[#D9FF00] hover:bg-[#D9FF00]/10 transition-colors"
+            className="w-8 h-8 flex items-center justify-center border border-gray-600 hover-accent-border hover-accent-bg transition-colors"
           >
             <Volume2 className="w-4 h-4 text-gray-300" />
           </button>

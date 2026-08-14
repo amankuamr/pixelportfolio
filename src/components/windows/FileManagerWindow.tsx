@@ -101,7 +101,7 @@ export default function FileManagerWindow({
       }}
     >
       <div
-        className="h-10 bg-[#1a2332] border-b border-[#D9FF00]/30 flex items-center px-3 gap-2 cursor-move select-none"
+        className="h-10 bg-[#1a2332] border-b accent-border-30 flex items-center px-3 gap-2 cursor-move select-none"
         onMouseDown={handleMouseDown}
       >
         <div className="w-5 h-5 flex items-center justify-center text-gray-400">
@@ -137,18 +137,18 @@ export default function FileManagerWindow({
 
       <div className="h-10 bg-[#1a2332] border-b border-gray-700 flex items-center px-2 gap-1">
         <div className="flex items-center gap-0.5">
-          <button className="w-7 h-7 flex items-center justify-center hover:bg-[#D9FF00]/10 transition-colors">
+          <button className="w-7 h-7 flex items-center justify-center hover-accent-bg transition-colors">
             <ChevronLeft className="w-4 h-4 text-gray-300" />
           </button>
-          <button className="w-7 h-7 flex items-center justify-center hover:bg-[#D9FF00]/10 transition-colors">
+          <button className="w-7 h-7 flex items-center justify-center hover-accent-bg transition-colors">
             <ChevronRight className="w-4 h-4 text-gray-300" />
           </button>
-          <button className="w-7 h-7 flex items-center justify-center hover:bg-[#D9FF00]/10 transition-colors">
+          <button className="w-7 h-7 flex items-center justify-center hover-accent-bg transition-colors">
             <ChevronUp className="w-4 h-4 text-gray-300" />
           </button>
         </div>
         <div className="flex-1 max-w-xl">
-          <div className={`flex items-center gap-2 px-3 py-1 border transition-colors ${searchFocused ? "border-[#D9FF00] bg-[#151F27]" : "border-gray-600 bg-[#0f1924]"
+          <div className={`flex items-center gap-2 px-3 py-1 border transition-colors ${searchFocused ? "accent-border bg-[#151F27]" : "border-gray-600 bg-[#0f1924]"
             }`}>
             <Search className="w-4 h-4 text-gray-400 shrink-0" />
             <input
@@ -170,11 +170,11 @@ export default function FileManagerWindow({
                 key={index}
                 onClick={item.onClick}
                 className={`w-full flex items-center gap-2.5 px-2.5 py-2 mb-0.5 transition-colors text-left ${item.active
-                    ? "bg-[#D9FF00]/15 text-[#D9FF00]"
-                    : "hover:bg-[#D9FF00]/10 text-gray-300"
+                    ? "accent-bg accent-text"
+                    : "hover-accent-bg text-gray-300"
                   }`}
               >
-                <div className={`w-5 h-5 flex items-center justify-center shrink-0 ${item.active ? "text-[#D9FF00]" : "text-gray-400"}`}>
+                <div className={`w-5 h-5 flex items-center justify-center shrink-0 ${item.active ? "accent-text" : "text-gray-400"}`}>
                   {item.icon}
                 </div>
                 <span className="text-sm truncate">{item.label}</span>
