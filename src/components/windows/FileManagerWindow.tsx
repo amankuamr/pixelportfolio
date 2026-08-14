@@ -21,7 +21,9 @@ interface FileManagerWindowProps {
   initialSize?: { width: number; height: number };
   onClose?: () => void;
   onMinimize?: () => void;
+  onMaximize?: () => void;
   isMinimized?: boolean;
+  isMaximized?: boolean;
   zIndex?: number;
   onFocus?: () => void;
   addressPath?: string;
@@ -40,7 +42,9 @@ export default function FileManagerWindow({
   initialSize = { width: 850, height: 550 },
   onClose,
   onMinimize,
+  onMaximize,
   isMinimized = false,
+  isMaximized = false,
   zIndex = 10,
   onFocus,
   addressPath = "",
@@ -50,19 +54,33 @@ export default function FileManagerWindow({
   onUp,
 }: FileManagerWindowProps) {
    const [position, setPosition] = useState(initialPosition);
+   const [size, setSize] = useState(initialSize);
    const [isDragging, setIsDragging] = useState(false);
    const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
 
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if ((e.target as HTMLElement).closest(".window-controls")) return;
-    if ((e.target as HTMLElement).closest("input")) return;
-    onFocus?.();
-    setIsDragging(true);
-    setDragOffset({
-      x: e.clientX - position.x,
-      y: e.clientY - position.y,
-    });
-  };
+   const toggleMaximize = () => {
+     if (isMaximized) {
+       setPosition(initialPosition);
+       setSize(initialSize);
+       onMaximize?.();
+     } else {
+       setPosition({ x: 0, y: 0 });
+       setSize({ width: window.innerWidth, height: window.innerHeight });
+       onMaximize?.();
+     }
+   };
+
+   const handleMouseDown = (e: React.MouseEvent) => {
+     if ((e.target as HTMLElement).closest(".window-controls")) return;
+     if ((e.target as HTMLElement).closest("input")) return;
+     if (isMaximized) return;
+     onFocus?.();
+     setIsDragging(true);
+     setDragOffset({
+       x: e.clientX - position.x,
+       y: e.clientY - position.y,
+     });
+   };
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -102,8 +120,8 @@ export default function FileManagerWindow({
       style={{
         left: position.x,
         top: position.y,
-        width: initialSize.width,
-        height: initialSize.height,
+        width: size.width,
+        height: size.height,
         zIndex,
         borderRadius: 0,
       }}
@@ -118,6 +136,27 @@ export default function FileManagerWindow({
         </div>
         <span className="text-sm font-semibold text-gray-200 flex-1">{title}</span>
         <div className="window-controls flex items-center gap-1">
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={toggleMaximize}
+            className="w-5 h-5 flex items-center justify-center border border-yellow-400/60"
+            style={{ borderRadius: 0, backgroundColor: "rgba(250,204,21,0.15)" }}
+          >
+            <svg viewBox="0 0 24 24" fill="none" className="w-3 h-3 text-yellow-400">
+              {isMaximized ? (
+                <>
+                  <rect x="4" y="4" width="16" height="16" stroke="currentColor" strokeWidth="2" />
+                  <path d="M9 9h6v6H9z" fill="currentColor" />
+                </>
+              ) : (
+                <>
+                  <rect x="5" y="5" width="14" height="14" stroke="currentColor" strokeWidth="2" />
+                  <path d="M8 8h8v8H8z" fill="currentColor" />
+                </>
+              )}
+            </svg>
+          </motion.button>
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}

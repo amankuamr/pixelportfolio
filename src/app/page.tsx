@@ -347,7 +347,10 @@ export default function Home() {
         {windows.map((win) => {
           const basePosition: Record<string, { x: number; y: number }> = {
             about: { x: 300, y: 150 },
-            projects: { x: 500, y: 200 },
+            projects: {
+              x: Math.max(0, (typeof window !== "undefined" ? window.innerWidth : 1920) - 1050) / 2,
+              y: Math.max(0, (typeof window !== "undefined" ? window.innerHeight : 1080) - 650) / 2,
+            },
             skills: { x: 400, y: 180 },
             contact: { x: 350, y: 220 },
             resume: { x: 450, y: 160 },
@@ -517,16 +520,24 @@ export default function Home() {
             );
           }
 
+          const isFileManager = !["cmd", "about", "personalization"].includes(win.type);
+
           return (
             <FileManagerWindow
               key={win.id}
               title={titles[win.type] || win.type}
               icon={iconMap[win.type] || null}
               initialPosition={position}
-              initialSize={{ width: 850, height: 550 }}
+              initialSize={
+                win.type === "projects"
+                  ? { width: 1050, height: 650 }
+                  : { width: 850, height: 550 }
+              }
               onClose={() => closeWindow(win.id)}
               onMinimize={() => toggleMinimize(win.id)}
+              onMaximize={() => toggleMaximize(win.id)}
               isMinimized={win.isMinimized}
+              isMaximized={isFileManager ? win.isMaximized : undefined}
               zIndex={activeWindow === win.id ? 100 : 10}
               onFocus={() => handleWindowFocus(win.id)}
               sidebarItems={sidebarItemsMap[win.type] || []}
