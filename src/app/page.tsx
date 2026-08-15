@@ -497,7 +497,9 @@ export default function Home() {
                 initialSize={{ width: 900, height: 600 }}
                 onClose={() => closeWindow(win.id)}
                 onMinimize={() => toggleMinimize(win.id)}
+                onMaximize={() => toggleMaximize(win.id)}
                 isMinimized={win.isMinimized}
+                isMaximized={win.isMaximized}
                 zIndex={activeWindow === win.id ? 100 : 10}
                 onFocus={() => handleWindowFocus(win.id)}
               />
