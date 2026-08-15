@@ -2,10 +2,10 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { User, FolderOpen, Briefcase, Mail, FileText, Image } from "lucide-react";
-import { AboutMeImageIcon, ProjectsImageIcon, SkillsImageIcon, ContactImageIcon } from "@/components/WindowsIcons";
+import { User, FolderOpen, Paintbrush, Mail, FileText, Image } from "lucide-react";
+import { AboutMeImageIcon, ProjectsImageIcon, PaintsImageIcon, ContactImageIcon } from "@/components/WindowsIcons";
 
-export default function StartMenu() {
+export default function StartMenu({ onOpenWindow }: { onOpenWindow?: (type: string) => void }) {
   const [isOpen, setIsOpen] = useState(false);
   const [showAllApps, setShowAllApps] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -30,7 +30,7 @@ export default function StartMenu() {
   const menuItems = [
     { icon: User, label: "About Me" },
     { icon: FolderOpen, label: "Projects" },
-    { icon: Briefcase, label: "Skills" },
+    { icon: Paintbrush, label: "Paints" },
     { icon: Mail, label: "Contact" },
     { icon: FileText, label: "Resume" },
     { icon: Image, label: "Gallery" },
@@ -39,7 +39,7 @@ export default function StartMenu() {
   const allApps = [
     { icon: User, label: "About Me" },
     { icon: FolderOpen, label: "Projects" },
-    { icon: Briefcase, label: "Skills" },
+    { icon: Paintbrush, label: "Paints" },
     { icon: Mail, label: "Contact" },
     { icon: FileText, label: "Resume" },
     { icon: Image, label: "Gallery" },
@@ -48,7 +48,7 @@ export default function StartMenu() {
   const tiles = [
     { title: "About Me", icon: <AboutMeImageIcon className="w-full h-full" />, size: "wide" },
     { title: "Projects", icon: <ProjectsImageIcon className="w-full h-full" />, size: "tall" },
-    { title: "Skills", icon: <SkillsImageIcon className="w-full h-full" />, size: "small" },
+    { title: "Paints", icon: <PaintsImageIcon className="w-full h-full" />, size: "small" },
     { title: "Contact", icon: <ContactImageIcon className="w-full h-full" />, size: "small" },
     { title: "Resume", icon: <span className="text-lg">📄</span>, size: "small" },
     { title: "Gallery", icon: <span className="text-lg">🖼️</span>, size: "wide" },
@@ -103,6 +103,7 @@ export default function StartMenu() {
                     key={item.label}
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.99 }}
+                    onClick={() => { onOpenWindow?.(item.label.toLowerCase()); setIsOpen(false); }}
                     className="w-full flex items-center gap-3 px-3 py-2 hover-accent-bg hover-accent-border border border-transparent transition-colors text-left"
                   >
                     <div className="w-7 h-7 flex items-center justify-center border border-gray-600 shrink-0">
@@ -154,12 +155,13 @@ export default function StartMenu() {
                       }}
                     >
                       <div className="p-1">
-                        {allApps.map((app) => (
-                          <motion.button
-                            key={app.label}
-                            whileHover={{ scale: 1.01 }}
-className="w-full flex items-center gap-3 px-3 py-2 hover-accent-bg hover-accent-border border border-transparent transition-colors text-left"
-                          >
+                       {allApps.map((app) => (
+                           <motion.button
+                             key={app.label}
+                             whileHover={{ scale: 1.01 }}
+                             onClick={() => { onOpenWindow?.(app.label.toLowerCase()); setShowAllApps(false); setIsOpen(false); }}
+                             className="w-full flex items-center gap-3 px-3 py-2 hover-accent-bg hover-accent-border border border-transparent transition-colors text-left"
+                           >
                             <div className="w-6 h-6 flex items-center justify-center border border-gray-600 shrink-0">
                               <app.icon className="w-3 h-3 text-gray-300" />
                             </div>
@@ -192,10 +194,11 @@ className="w-full flex items-center gap-3 px-3 py-2 hover-accent-bg hover-accent
               <div className="flex-1 p-4">
                 <div className="grid grid-cols-4 grid-rows-3 gap-2 h-full">
                   {tiles.map((tile) => (
-                    <motion.button
-                      key={tile.title}
-                      whileHover={{ scale: 1.05 }}
-                      className={`border border-gray-600 flex flex-col items-center justify-center gap-1 hover-accent-border hover-accent-bg transition-colors h-full w-full ${
+                  <motion.button
+                    key={tile.title}
+                    whileHover={{ scale: 1.05 }}
+                    onClick={() => { onOpenWindow?.(tile.title.toLowerCase()); setIsOpen(false); }}
+                    className={`border border-gray-600 flex flex-col items-center justify-center gap-1 hover-accent-border hover-accent-bg transition-colors h-full w-full ${
                         tile.size === "wide" ? "col-span-2 row-span-1" :
                         tile.size === "tall" ? "col-span-1 row-span-2" :
                         "col-span-1 row-span-1"

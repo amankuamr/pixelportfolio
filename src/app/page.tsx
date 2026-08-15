@@ -16,7 +16,8 @@ import DeleteConfirmationPopup from "@/components/popups/DeleteConfirmationPopup
 import OperaAbout from "@/components/windows/OperaAbout";
 import PersonalizationWindow from "@/components/windows/PersonalizationWindow";
 import ProjectsFileManager from "@/components/windows/ProjectsFileManager";
-import { SkillsImageIcon, AboutMeImageIcon, ProjectsImageIcon, ContactImageIcon, ResumeImageIcon } from "@/components/WindowsIcons";
+import PaintsWindow from "@/components/windows/PaintsWindow";
+import { PaintsImageIcon, SkillsImageIcon, AboutMeImageIcon, ProjectsImageIcon, ContactImageIcon, ResumeImageIcon } from "@/components/WindowsIcons";
 
 export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -280,30 +281,32 @@ export default function Home() {
     }
   }, [contextMenu, taskbarContextMenu, startButtonContextMenuOpen, iconContextMenu, deleteConfirm]);
 
-  const taskbarWindows = windows.map((w) => {
-    const titles: Record<string, string> = {
-      about: "About Me",
-      projects: "Projects",
-      skills: "Skills",
-      contact: "Contact",
-      resume: "Resume",
-      cmd: "Version",
-    };
-    const icons: Record<string, React.ReactNode> = {
-      about: <AboutMeImageIcon className="w-full h-full" />,
-      projects: <ProjectsImageIcon className="w-full h-full" />,
-      skills: <SkillsImageIcon className="w-full h-full" />,
-      contact: <ContactImageIcon className="w-full h-full" />,
-      resume: <ResumeImageIcon className="w-full h-full" />,
-      cmd: (
-        <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
-          <rect x="3" y="3" width="18" height="18" stroke="var(--accent)" strokeWidth="2" />
-          <line x1="7" y1="8" x2="17" y2="8" stroke="var(--accent)" strokeWidth="2" />
-          <line x1="7" y1="12" x2="17" y2="12" stroke="var(--accent)" strokeWidth="2" />
-          <line x1="7" y1="16" x2="13" y2="16" stroke="var(--accent)" strokeWidth="2" />
-        </svg>
-      ),
-    };
+   const taskbarWindows = windows.map((w) => {
+     const titles: Record<string, string> = {
+       about: "About Me",
+       projects: "Projects",
+       skills: "Skills",
+       paints: "Paints",
+       contact: "Contact",
+       resume: "Resume",
+       cmd: "Version",
+     };
+     const icons: Record<string, React.ReactNode> = {
+       about: <AboutMeImageIcon className="w-full h-full" />,
+       projects: <ProjectsImageIcon className="w-full h-full" />,
+       skills: <SkillsImageIcon className="w-full h-full" />,
+       paints: <PaintsImageIcon className="w-full h-full" />,
+       contact: <ContactImageIcon className="w-full h-full" />,
+       resume: <ResumeImageIcon className="w-full h-full" />,
+       cmd: (
+         <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
+           <rect x="3" y="3" width="18" height="18" stroke="var(--accent)" strokeWidth="2" />
+           <line x1="7" y1="8" x2="17" y2="8" stroke="var(--accent)" strokeWidth="2" />
+           <line x1="7" y1="12" x2="17" y2="12" stroke="var(--accent)" strokeWidth="2" />
+           <line x1="7" y1="16" x2="13" y2="16" stroke="var(--accent)" strokeWidth="2" />
+         </svg>
+       ),
+     };
     return {
       id: w.id,
       title: titles[w.type] || w.type,
@@ -390,35 +393,35 @@ export default function Home() {
             );
           }
 
-          const iconMap: Record<string, React.ReactNode> = {
-            about: <AboutMeImageIcon className="w-4 h-4" />,
-            projects: <ProjectsImageIcon className="w-4 h-4" />,
-            skills: <SkillsImageIcon className="w-4 h-4" />,
-            contact: <ContactImageIcon className="w-4 h-4" />,
-            resume: <ResumeImageIcon className="w-4 h-4" />,
-          };
+           const iconMap: Record<string, React.ReactNode> = {
+             about: <AboutMeImageIcon className="w-4 h-4" />,
+             projects: <ProjectsImageIcon className="w-4 h-4" />,
+             skills: <SkillsImageIcon className="w-4 h-4" />,
+             contact: <ContactImageIcon className="w-4 h-4" />,
+             resume: <ResumeImageIcon className="w-4 h-4" />,
+           };
 
-          const titles: Record<string, string> = {
-            about: "About Me",
-            projects: "Projects",
-            skills: "Skills",
-            contact: "Contact",
-            resume: "Resume",
-            cmd: "Version",
-          };
+           const titles: Record<string, string> = {
+             about: "About Me",
+             projects: "Projects",
+             skills: "Skills",
+             contact: "Contact",
+             resume: "Resume",
+             cmd: "Version",
+           };
 
-          const sidebarItemsMap: Record<string, Array<{ label: string; icon: React.ReactNode; active?: boolean }>> = {
-            about: [
-              { label: "Home", icon: <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="currentColor" strokeWidth="2"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>, active: true },
-              { label: "Desktop", icon: <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="currentColor" strokeWidth="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2" /><line x1="8" y1="21" x2="16" y2="21" /><line x1="12" y1="17" x2="12" y2="21" /></svg> },
-              { label: "Downloads", icon: <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg> },
-            ],
-            projects: [],
-            skills: [
-              { label: "Home", icon: <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="currentColor" strokeWidth="2"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg> },
-              { label: "Skills", icon: <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="currentColor" strokeWidth="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>, active: true },
-              { label: "Technologies", icon: <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="currentColor" strokeWidth="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2" /><line x1="8" y1="21" x2="16" y2="21" /><line x1="12" y1="17" x2="12" y2="21" /></svg> },
-            ],
+           const sidebarItemsMap: Record<string, Array<{ label: string; icon: React.ReactNode; active?: boolean }>> = {
+             about: [
+               { label: "Home", icon: <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="currentColor" strokeWidth="2"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>, active: true },
+               { label: "Desktop", icon: <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="currentColor" strokeWidth="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2" /><line x1="8" y1="21" x2="16" y2="21" /><line x1="12" y1="17" x2="12" y2="21" /></svg> },
+               { label: "Downloads", icon: <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg> },
+             ],
+             projects: [],
+             skills: [
+               { label: "Home", icon: <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="currentColor" strokeWidth="2"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg> },
+               { label: "Skills", icon: <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="currentColor" strokeWidth="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>, active: true },
+               { label: "Technologies", icon: <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="currentColor" strokeWidth="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2" /><line x1="8" y1="21" x2="16" y2="21" /><line x1="12" y1="17" x2="12" y2="21" /></svg> },
+             ],
             contact: [
               { label: "Home", icon: <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="currentColor" strokeWidth="2"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg> },
               { label: "Contact", icon: <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" /></svg>, active: true },
@@ -431,59 +434,74 @@ export default function Home() {
             ],
           };
 
-          const contentMap: Record<string, React.ReactNode> = {
-            about: (
-              <div className="p-4 space-y-4">
-                <h2 className="text-2xl font-bold accent-text">Hello, I&apos;m a Designer</h2>
-                <p className="text-gray-300 font-light">
-                  I create beautiful and functional user experiences. Welcome to my portfolio!
-                </p>
-              </div>
-            ),
-            projects: (
-              <ProjectsFileManager
-                selectedCategory={projectsState[win.id]?.selectedCategory || "Graphics Design"}
-                openedFolder={projectsState[win.id]?.openedFolder || null}
-                onCategoryClick={(name) =>
-                  setProjectsState((prev) => ({
-                    ...prev,
-                    [win.id]: { selectedCategory: name, openedFolder: null, path: `Projects > ${name}` },
-                  }))
-                }
-                onFolderClick={(folderName) =>
-                  setProjectsState((prev) => ({
-                    ...prev,
-                    [win.id]: {
-                      ...prev[win.id],
-                      openedFolder: folderName,
-                      path: `Projects > ${prev[win.id]?.selectedCategory || "Graphics Design"} > ${folderName}`,
-                    },
-                  }))
-                }
-              />
-            ),
-            skills: (
-              <div className="p-4 space-y-4">
-                <h2 className="text-2xl font-bold accent-text">Skills</h2>
-                <p className="text-gray-300 font-light">My technical and design skills.</p>
-              </div>
-            ),
-            contact: (
-              <div className="p-4 space-y-4">
-                <h2 className="text-2xl font-bold accent-text">Contact</h2>
-                <p className="text-gray-300 font-light">Get in touch with me.</p>
-              </div>
-            ),
-            resume: (
-              <div className="p-4 space-y-4">
-                <h2 className="text-2xl font-bold accent-text">Resume</h2>
-                <p className="text-gray-300 font-light">My resume and work experience.</p>
-              </div>
-            ),
-          };
+           const contentMap: Record<string, React.ReactNode> = {
+             about: (
+               <div className="p-4 space-y-4">
+                 <h2 className="text-2xl font-bold accent-text">Hello, I&apos;m a Designer</h2>
+                 <p className="text-gray-300 font-light">
+                   I create beautiful and functional user experiences. Welcome to my portfolio!
+                 </p>
+               </div>
+             ),
+             projects: (
+               <ProjectsFileManager
+                 selectedCategory={projectsState[win.id]?.selectedCategory || "Graphics Design"}
+                 openedFolder={projectsState[win.id]?.openedFolder || null}
+                 onCategoryClick={(name) =>
+                   setProjectsState((prev) => ({
+                     ...prev,
+                     [win.id]: { selectedCategory: name, openedFolder: null, path: `Projects > ${name}` },
+                   }))
+                 }
+                 onFolderClick={(folderName) =>
+                   setProjectsState((prev) => ({
+                     ...prev,
+                     [win.id]: {
+                       ...prev[win.id],
+                       openedFolder: folderName,
+                       path: `Projects > ${prev[win.id]?.selectedCategory || "Graphics Design"} > ${folderName}`,
+                     },
+                   }))
+                 }
+               />
+             ),
+             skills: (
+               <div className="p-4 space-y-4">
+                 <h2 className="text-2xl font-bold accent-text">Skills</h2>
+                 <p className="text-gray-300 font-light">My technical and design skills.</p>
+               </div>
+             ),
+             contact: (
+               <div className="p-4 space-y-4">
+                 <h2 className="text-2xl font-bold accent-text">Contact</h2>
+                 <p className="text-gray-300 font-light">Get in touch with me.</p>
+               </div>
+             ),
+             resume: (
+               <div className="p-4 space-y-4">
+                 <h2 className="text-2xl font-bold accent-text">Resume</h2>
+                 <p className="text-gray-300 font-light">My resume and work experience.</p>
+               </div>
+             ),
+           };
 
           if (win.type === "cmd") {
             return null; // already handled above
+          }
+
+          if (win.type === "paints") {
+            return (
+              <PaintsWindow
+                key={win.id}
+                initialPosition={position}
+                initialSize={{ width: 900, height: 600 }}
+                onClose={() => closeWindow(win.id)}
+                onMinimize={() => toggleMinimize(win.id)}
+                isMinimized={win.isMinimized}
+                zIndex={activeWindow === win.id ? 100 : 10}
+                onFocus={() => handleWindowFocus(win.id)}
+              />
+            );
           }
 
           if (win.type === "about") {
@@ -559,6 +577,7 @@ export default function Home() {
         onTaskbarContextMenu={(id, x) => setTaskbarContextMenu({ id, x, y: 0 })}
         onStartButtonContextMenu={() => setStartButtonContextMenuOpen((prev) => !prev)}
         startButtonContextMenuOpen={startButtonContextMenuOpen}
+        onOpenWindow={openWindow}
       />
 
       {contextMenu && (

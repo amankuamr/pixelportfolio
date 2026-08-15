@@ -114,6 +114,14 @@ export function SkillsImageIcon({ className }: { className?: string }) {
   );
 }
 
+export function PaintsImageIcon({ className }: { className?: string }) {
+  return (
+    <div className={`flex items-center justify-center ${className || ""}`}>
+      <Image src="/desktopico/paint.png" alt="Paints" width={48} height={48} className="w-full h-full object-contain" />
+    </div>
+  );
+}
+
 export function AboutMeImageIcon({ className }: { className?: string }) {
   return (
     <div className={`flex items-center justify-center ${className || ""}`}>
