@@ -15,6 +15,8 @@ import {
   Undo2,
   Redo2,
   Minus,
+  Triangle,
+  Star,
 } from "lucide-react";
 
 interface PaintsWindowProps {
@@ -29,7 +31,7 @@ interface PaintsWindowProps {
   onFocus?: () => void;
 }
 
-type Tool = "brush" | "eraser" | "rectangle" | "circle" | "line" | "fill" | "text" | "picker";
+type Tool = "brush" | "eraser" | "rectangle" | "circle" | "line" | "fill" | "text" | "picker" | "triangle" | "star";
 type BrushShape = "round" | "square" | "spray";
 
 interface HistoryState {
@@ -67,6 +69,7 @@ export default function PaintsWindow({
 }: PaintsWindowProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const colorWheelRef = useRef<HTMLCanvasElement>(null);
 
   const [tool, setTool] = useState<Tool>("brush");
   const [brushSize, setBrushSize] = useState(4);
@@ -90,6 +93,7 @@ export default function PaintsWindow({
     h: number;
   } | null>(null);
 
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     const taskbarHeight = 52;
     if (isMaximized) {
@@ -100,6 +104,7 @@ export default function PaintsWindow({
       setSize(initialSize);
     }
   }, [isMaximized, initialPosition, initialSize]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const getCanvasCoords = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
@@ -253,6 +258,76 @@ export default function PaintsWindow({
     [tool, currentColor, brushSize, brushShape]
   );
 
+  const hslToRgb = (h: number, s: number, l: number): [number, number, number] => {
+    s /= 100;
+    l /= 100;
+    const c = (1 - Math.abs(2 * l - 1)) * s;
+    const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+    const m = l - c / 2;
+    let r = 0, g = 0, b = 0;
+    if (h < 60) [r, g, b] = [c, x, 0];
+    else if (h < 120) [r, g, b] = [x, c, 0];
+    else if (h < 180) [r, g, b] = [0, c, x];
+    else if (h < 240) [r, g, b] = [0, x, c];
+    else if (h < 300) [r, g, b] = [x, 0, c];
+    else [r, g, b] = [c, 0, x];
+    return [Math.round((r + m) * 255), Math.round((g + m) * 255), Math.round((b + m) * 255)];
+  };
+
+  const drawColorWheel = useCallback(() => {
+    const canvas = colorWheelRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    const size = 160;
+    canvas.width = size;
+    canvas.height = size;
+    const imageData = ctx.createImageData(size, size);
+    const data = imageData.data;
+    const centerX = size / 2;
+    const centerY = size / 2;
+    const radius = size / 2;
+
+    for (let y = 0; y < size; y++) {
+      for (let x = 0; x < size; x++) {
+        const dx = x - centerX;
+        const dy = y - centerY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist <= radius) {
+          const hue = (Math.atan2(dy, dx) * 180 / Math.PI + 360) % 360;
+          const saturation = (dist / radius) * 100;
+          const rgb = hslToRgb(hue, saturation, 50);
+          const idx = (y * size + x) * 4;
+          data[idx] = rgb[0];
+          data[idx + 1] = rgb[1];
+          data[idx + 2] = rgb[2];
+          data[idx + 3] = 255;
+        }
+      }
+    }
+    ctx.putImageData(imageData, 0, 0);
+  }, []);
+
+  const handleColorWheelClick = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
+    const canvas = colorWheelRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const x = (e.clientX - rect.left) * scaleX;
+    const y = (e.clientY - rect.top) * scaleY;
+    const pixel = ctx.getImageData(x, y, 1, 1).data;
+    const hex = "#" + [pixel[0], pixel[1], pixel[2]].map(v => v.toString(16).padStart(2, "0")).join("");
+    setCurrentColor(hex);
+    setTool("brush");
+  }, []);
+
+  useEffect(() => {
+    drawColorWheel();
+  }, [drawColorWheel]);
+
   const drawShapePreview = useCallback(
     (ctx: CanvasRenderingContext2D, x: number, y: number) => {
       if (!snapshot || !startPos) return;
@@ -282,6 +357,38 @@ export default function PaintsWindow({
         ctx.beginPath();
         ctx.moveTo(sx, sy);
         ctx.lineTo(x, y);
+        ctx.stroke();
+      } else if (tool === "triangle") {
+        const topX = (sx + x) / 2;
+        const topY = Math.min(sy, y);
+        const bottomLeftX = Math.min(sx, x);
+        const bottomLeftY = Math.max(sy, y);
+        const bottomRightX = Math.max(sx, x);
+        const bottomRightY = Math.max(sy, y);
+        ctx.beginPath();
+        ctx.moveTo(topX, topY);
+        ctx.lineTo(bottomLeftX, bottomLeftY);
+        ctx.lineTo(bottomRightX, bottomRightY);
+        ctx.closePath();
+        ctx.stroke();
+      } else if (tool === "star") {
+        const centerX = (sx + x) / 2;
+        const centerY = (sy + y) / 2;
+        const outerRadius = Math.max(1, Math.sqrt(Math.pow(x - sx, 2) + Math.pow(y - sy, 2)) / 2);
+        const innerRadius = outerRadius / 2;
+        ctx.beginPath();
+        for (let i = 0; i < 5; i++) {
+          const outerAngle = (Math.PI / 2 * 3) + (i * 2 * Math.PI / 5);
+          const innerAngle = outerAngle + Math.PI / 5;
+          const ox = centerX + Math.cos(outerAngle) * outerRadius;
+          const oy = centerY - Math.sin(outerAngle) * outerRadius;
+          const ix = centerX + Math.cos(innerAngle) * innerRadius;
+          const iy = centerY - Math.sin(innerAngle) * innerRadius;
+          if (i === 0) ctx.moveTo(ox, oy);
+          else ctx.lineTo(ox, oy);
+          ctx.lineTo(ix, iy);
+        }
+        ctx.closePath();
         ctx.stroke();
       }
     },
@@ -340,7 +447,7 @@ export default function PaintsWindow({
 
       if (tool === "brush" || tool === "eraser") {
         drawBrush(ctx, x, y);
-      } else if (tool === "rectangle" || tool === "circle" || tool === "line") {
+      } else if (tool === "rectangle" || tool === "circle" || tool === "line" || tool === "triangle" || tool === "star") {
         drawShapePreview(ctx, x, y);
       }
     },
@@ -426,6 +533,8 @@ export default function PaintsWindow({
     { id: "rectangle", icon: <Square className="w-4 h-4" /> },
     { id: "circle", icon: <Circle className="w-4 h-4" /> },
     { id: "line", icon: <Minus className="w-4 h-4" /> },
+    { id: "triangle", icon: <Triangle className="w-4 h-4" /> },
+    { id: "star", icon: <Star className="w-4 h-4" /> },
     { id: "fill", icon: <span className="text-xs font-bold">F</span> },
     { id: "text", icon: <Type className="w-4 h-4" /> },
     { id: "picker", icon: <Pipette className="w-4 h-4" /> },
@@ -576,6 +685,15 @@ export default function PaintsWindow({
                 onChange={(e) => { setCurrentColor(e.target.value); setTool("brush"); }}
                 className="w-full h-7 cursor-pointer border border-gray-700"
                 style={{ borderRadius: 0 }}
+              />
+            </div>
+            <div className="mt-2 flex flex-col items-center gap-1">
+              <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">Color Wheel</div>
+              <canvas
+                ref={colorWheelRef}
+                onClick={handleColorWheelClick}
+                className="w-full max-w-[160px] border border-gray-700 cursor-crosshair"
+                style={{ borderRadius: 0, aspectRatio: "1" }}
               />
             </div>
           </div>

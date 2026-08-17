@@ -251,7 +251,7 @@ export default function ProjectsFileManager({
         name: `File ${i + 1}`,
         type: "File",
         dateModified: "2025-08-14",
-        size: `${(Math.random() * 10).toFixed(1)} MB`,
+        size: `${((i * 7 + 3) % 10 + 1).toFixed(1)} MB`,
       }))
     : [];
 

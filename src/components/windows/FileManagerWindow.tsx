@@ -64,6 +64,7 @@ export default function FileManagerWindow({
   const initialPositionRef = useRef(initialPosition);
   const initialSizeRef = useRef(initialSize);
 
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     if (isMaximized) {
       setPosition({ x: 0, y: 0 });
@@ -73,6 +74,7 @@ export default function FileManagerWindow({
       setSize(initialSizeRef.current);
     }
   }, [isMaximized]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const toggleMaximize = useCallback(() => {
     onMaximize?.();
